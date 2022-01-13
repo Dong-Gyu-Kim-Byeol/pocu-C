@@ -2,7 +2,8 @@
 
 #include <limits.h>
 
-int get_index_of(const int numbers[], const size_t element_count, const int num) {
+int get_index_of(const int numbers[], const size_t element_count, const int num) 
+{
 	const int* ptr = NULL;
 	const int* const end = numbers + element_count;
 	for (ptr = numbers; ptr < end; ++ptr) {
@@ -14,7 +15,8 @@ int get_index_of(const int numbers[], const size_t element_count, const int num)
 	return -1;
 }
 
-int get_last_index_of(const int numbers[], const size_t element_count, const int num) {
+int get_last_index_of(const int numbers[], const size_t element_count, const int num) 
+{
 	const int* ptr = NULL;
 	for (ptr = numbers + element_count - 1; ptr >= numbers; --ptr) {
 		if (*ptr == num) {
@@ -25,7 +27,8 @@ int get_last_index_of(const int numbers[], const size_t element_count, const int
 	return -1;
 }
 
-int get_max_index(const int numbers[], const size_t element_count) {
+int get_max_index(const int numbers[], const size_t element_count) 
+{
 	const int* max = numbers;
 	const int* ptr = NULL;
 	const int* const end = numbers + element_count;
@@ -43,7 +46,8 @@ int get_max_index(const int numbers[], const size_t element_count) {
 	return max - numbers;
 }
 
-int get_min_index(const int numbers[], const size_t element_count) {
+int get_min_index(const int numbers[], const size_t element_count) 
+{
 	const int* min = numbers;
 	const int* ptr = NULL;
 	const int* const end = numbers + element_count;
@@ -61,7 +65,8 @@ int get_min_index(const int numbers[], const size_t element_count) {
 	return min - numbers;
 }
 
-int is_all_positive(const int numbers[], const size_t element_count) {
+int is_all_positive(const int numbers[], const size_t element_count) 
+{
 	const int* ptr = NULL;
 	const int* const end = numbers + element_count;
 
@@ -78,7 +83,8 @@ int is_all_positive(const int numbers[], const size_t element_count) {
 	return TRUE;
 }
 
-int has_even(const int numbers[], const size_t element_count) {
+int has_even(const int numbers[], const size_t element_count) 
+{
 	const int* ptr = NULL;
 	const int* const end = numbers + element_count;
 
@@ -95,7 +101,8 @@ int has_even(const int numbers[], const size_t element_count) {
 	return FALSE;
 }
 
-int insert(int numbers[], const size_t element_count, const int num, const size_t pos) {
+int insert(int numbers[], const size_t element_count, const int num, const size_t pos) 
+{
 	int* ptr = NULL;
 	const int* const begin = numbers + pos;
 
@@ -111,7 +118,8 @@ int insert(int numbers[], const size_t element_count, const int num, const size_
 	return TRUE;
 }
 
-int remove_at(int numbers[], const size_t element_count, const size_t index) {
+int remove_at(int numbers[], const size_t element_count, const size_t index) 
+{
 	int* ptr = NULL;
 	const int* const end = numbers + element_count;
 
