@@ -2,135 +2,135 @@
 
 #include <limits.h>
 
-int get_index_of(const int numbers[], const size_t element_count, const int num) 
+int get_index_of(const int numbers[], const size_t element_count, const int num)
 {
-	const int* ptr = NULL;
-	const int* const end = numbers + element_count;
-	for (ptr = numbers; ptr < end; ++ptr) {
-		if (*ptr == num) {
-			return ptr - numbers;
-		}
-	}
+    const int* ptr = NULL;
+    const int* const end = numbers + element_count;
+    for (ptr = numbers; ptr < end; ++ptr) {
+        if (*ptr == num) {
+            return ptr - numbers;
+        }
+    }
 
-	return -1;
+    return -1;
 }
 
-int get_last_index_of(const int numbers[], const size_t element_count, const int num) 
+int get_last_index_of(const int numbers[], const size_t element_count, const int num)
 {
-	const int* ptr = NULL;
-	for (ptr = numbers + element_count - 1; ptr >= numbers; --ptr) {
-		if (*ptr == num) {
-			return ptr - numbers;
-		}
-	}
+    const int* ptr = NULL;
+    for (ptr = numbers + element_count - 1; ptr >= numbers; --ptr) {
+        if (*ptr == num) {
+            return ptr - numbers;
+        }
+    }
 
-	return -1;
+    return -1;
 }
 
-int get_max_index(const int numbers[], const size_t element_count) 
+int get_max_index(const int numbers[], const size_t element_count)
 {
-	const int* max = numbers;
-	const int* ptr = NULL;
-	const int* const end = numbers + element_count;
+    const int* max = numbers;
+    const int* ptr = NULL;
+    const int* const end = numbers + element_count;
 
-	if (element_count == 0) {
-		return -1;
-	}
+    if (element_count == 0) {
+        return -1;
+    }
 
-	for (ptr = numbers; ptr < end; ++ptr) {
-		if (*max < *ptr) {
-			max = ptr;
-		}
-	}
+    for (ptr = numbers; ptr < end; ++ptr) {
+        if (*max < *ptr) {
+            max = ptr;
+        }
+    }
 
-	return max - numbers;
+    return max - numbers;
 }
 
-int get_min_index(const int numbers[], const size_t element_count) 
+int get_min_index(const int numbers[], const size_t element_count)
 {
-	const int* min = numbers;
-	const int* ptr = NULL;
-	const int* const end = numbers + element_count;
+    const int* min = numbers;
+    const int* ptr = NULL;
+    const int* const end = numbers + element_count;
 
-	if (element_count == 0) {
-		return -1;
-	}
+    if (element_count == 0) {
+        return -1;
+    }
 
-	for (ptr = numbers; ptr < end; ++ptr) {
-		if (*min > *ptr) {
-			min = ptr;
-		}
-	}
+    for (ptr = numbers; ptr < end; ++ptr) {
+        if (*min > *ptr) {
+            min = ptr;
+        }
+    }
 
-	return min - numbers;
+    return min - numbers;
 }
 
-int is_all_positive(const int numbers[], const size_t element_count) 
+int is_all_positive(const int numbers[], const size_t element_count)
 {
-	const int* ptr = NULL;
-	const int* const end = numbers + element_count;
+    const int* ptr = NULL;
+    const int* const end = numbers + element_count;
 
-	if (element_count == 0) {
-		return FALSE;
-	}
+    if (element_count == 0) {
+        return FALSE;
+    }
 
-	for (ptr = numbers; ptr < end; ++ptr) {
-		if (*ptr < 0) {
-			return FALSE;
-		}
-	}
+    for (ptr = numbers; ptr < end; ++ptr) {
+        if (*ptr < 0) {
+            return FALSE;
+        }
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
-int has_even(const int numbers[], const size_t element_count) 
+int has_even(const int numbers[], const size_t element_count)
 {
-	const int* ptr = NULL;
-	const int* const end = numbers + element_count;
+    const int* ptr = NULL;
+    const int* const end = numbers + element_count;
 
-	if (element_count == 0) {
-		return FALSE;
-	}
+    if (element_count == 0) {
+        return FALSE;
+    }
 
-	for (ptr = numbers; ptr < end; ++ptr) {
-		if (*ptr % 2 == 0) {
-			return TRUE;
-		}
-	}
+    for (ptr = numbers; ptr < end; ++ptr) {
+        if (*ptr % 2 == 0) {
+            return TRUE;
+        }
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
-int insert(int numbers[], const size_t element_count, const int num, const size_t pos) 
+int insert(int numbers[], const size_t element_count, const int num, const size_t pos)
 {
-	int* ptr = NULL;
-	const int* const begin = numbers + pos;
+    int* ptr = NULL;
+    const int* const begin = numbers + pos;
 
-	if (pos > element_count) {
-		return FALSE;
-	}
+    if (pos > element_count) {
+        return FALSE;
+    }
 
-	for (ptr = numbers + element_count - 1; ptr >= begin; --ptr) {
-		*(ptr + 1) = *ptr;
-	}
-	numbers[pos] = num;
+    for (ptr = numbers + element_count - 1; ptr >= begin; --ptr) {
+        *(ptr + 1) = *ptr;
+    }
+    numbers[pos] = num;
 
-	return TRUE;
+    return TRUE;
 }
 
-int remove_at(int numbers[], const size_t element_count, const size_t index) 
+int remove_at(int numbers[], const size_t element_count, const size_t index)
 {
-	int* ptr = NULL;
-	const int* const end = numbers + element_count;
+    int* ptr = NULL;
+    const int* const end = numbers + element_count;
 
-	if (index >= element_count) {
-		return FALSE;
-	}
+    if (index >= element_count) {
+        return FALSE;
+    }
 
-	for (ptr = numbers + index; ptr < end; ++ptr) {
-		*ptr = *(ptr + 1);
-	}
-	numbers[element_count - 1] = INT_MIN;
+    for (ptr = numbers + index; ptr < end; ++ptr) {
+        *ptr = *(ptr + 1);
+    }
+    numbers[element_count - 1] = INT_MIN;
 
-	return TRUE;
+    return TRUE;
 }
