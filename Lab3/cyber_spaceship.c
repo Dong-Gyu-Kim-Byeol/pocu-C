@@ -18,7 +18,11 @@
 
 int is_overlap(const char* const arr1, const size_t length1, const char* const arr2, const size_t length2)
 {
-    return arr1 <= arr2 ? arr1 + length1 > arr2 : arr2 + length2 > arr1;
+    if (arr1 <= arr2) {
+        return arr1 + length1 > arr2 ? TRUE : FALSE;
+    }
+
+    return arr2 + length2 > arr1 ? TRUE : FALSE;
 }
 
 const char* get_longest_safe_zone_or_null(
@@ -90,24 +94,21 @@ int get_travel_time(
     const size_t cluster_lengths[],
     const size_t cluster_count)
 {
-    const double MUL_10 = 10;
-    const size_t SAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN_MUL_10 = 1.0 / 10.0 * MUL_10;
-    const size_t UNSAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN_MUL_10 = 1.0 / 5.0 * MUL_10;
-
-    size_t travel_time_in_min_mul_10 = 0.0;
+    const double SAFE_ZONE_DIV = 10.0;
+    const double UNSAFE_ZONE_DIV = 5.0;
 
     if (cab_length == 0) {
         return 0.0;
     }
 
     if (cluster_count == 0) {
-        travel_time_in_min_mul_10 = SAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN_MUL_10 * (double)cab_length;
-        return (int)round(travel_time_in_min_mul_10 / MUL_10);
+        return (int)round(cab_length / SAFE_ZONE_DIV);
     }
 
     {
         size_t cab_i;
         size_t cluster_i;
+        size_t safa_zone_count = 0;
 
         for (cab_i = 0; cab_i < cab_length; ++cab_i) {
             size_t overlap_count = 0;
@@ -118,15 +119,11 @@ int get_travel_time(
             }
             is_safe = overlap_count % 2 == 0;
 
-            if (is_safe == FALSE) {
-                travel_time_in_min_mul_10 += UNSAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN_MUL_10;
-                continue;
+            if (is_safe == TRUE) {
+                ++safa_zone_count;;
             }
-
-            assert(is_safe == TRUE);
-            travel_time_in_min_mul_10 += SAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN_MUL_10;
         }
-    }
 
-    return (int)round(travel_time_in_min_mul_10 / MUL_10);
+        return (int)round(safa_zone_count / SAFE_ZONE_DIV + (cab_length - safa_zone_count) / UNSAFE_ZONE_DIV);
+    }
 }
