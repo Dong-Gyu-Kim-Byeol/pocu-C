@@ -90,18 +90,19 @@ int get_travel_time(
     const size_t cluster_lengths[],
     const size_t cluster_count)
 {
-    const double SAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN = 1.0 / 10.0;
-    const double UNSAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN = 1.0 / 5.0;
+    const double MUL_10 = 10;
+    const size_t SAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN_MUL_10 = 1.0 / 10.0 * MUL_10;
+    const size_t UNSAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN_MUL_10 = 1.0 / 5.0 * MUL_10;
 
-    double travel_time_in_min = 0.0;
+    size_t travel_time_in_min_mul_10 = 0.0;
 
     if (cab_length == 0) {
         return 0.0;
     }
 
     if (cluster_count == 0) {
-        travel_time_in_min = SAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN * (double)cab_length;
-        return (int)round(travel_time_in_min);
+        travel_time_in_min_mul_10 = SAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN_MUL_10 * (double)cab_length;
+        return (int)round(travel_time_in_min_mul_10 / MUL_10);
     }
 
     {
@@ -118,14 +119,14 @@ int get_travel_time(
             is_safe = overlap_count % 2 == 0;
 
             if (is_safe == FALSE) {
-                travel_time_in_min += UNSAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN;
+                travel_time_in_min_mul_10 += UNSAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN_MUL_10;
                 continue;
             }
 
             assert(is_safe == TRUE);
-            travel_time_in_min += SAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN;
+            travel_time_in_min_mul_10 += SAFE_ZONE_ONE_BYTE_TRAVEL_TIME_IN_MIN_MUL_10;
         }
     }
 
-    return (int)round(travel_time_in_min);
+    return (int)round(travel_time_in_min_mul_10 / MUL_10);
 }
