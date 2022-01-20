@@ -120,7 +120,7 @@ int get_travel_time(
             is_safe = overlap_count % 2 == 0;
 
             if (is_safe == TRUE) {
-                ++safa_zone_count;;
+                ++safa_zone_count;
             }
         }
 
