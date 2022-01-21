@@ -55,7 +55,7 @@ const char* get_longest_safe_zone_or_null(
 
         for (cab_i = 0; cab_i < cab_length; ++cab_i) {
             size_t overlap_count = 0;
-            int is_safe;
+            size_t is_safe;
 
             for (cluster_i = 0; cluster_i < cluster_count; ++cluster_i) {
                 overlap_count += is_overlap(&cab_start_location[cab_i], 1, cluster_start_locations[cluster_i], cluster_lengths[cluster_i]);
@@ -112,7 +112,7 @@ int get_travel_time(
 
         for (cab_i = 0; cab_i < cab_length; ++cab_i) {
             size_t overlap_count = 0;
-            int is_safe;
+            size_t is_safe;
 
             for (cluster_i = 0; cluster_i < cluster_count; ++cluster_i) {
                 overlap_count += is_overlap(&cab_start_location[cab_i], 1, cluster_start_locations[cluster_i], cluster_lengths[cluster_i]);
