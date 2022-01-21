@@ -18,9 +18,15 @@ size_t get_column_count(void);
 
 int get_score(const color_t color);
 
+int is_valid_color(const color_t color);
+
 int get_color(const size_t row, const size_t col);
 
 int is_in_board(const size_t row, const size_t col);
+
+int is_in_board_row(const size_t row);
+
+int is_in_board_col(const size_t col);
 
 int is_placeable(const size_t row, const size_t col);
 
