@@ -333,7 +333,7 @@ int insert_row(const color_t color, const size_t row)
         return FALSE;
     }
 
-    if (is_in_board_row(row) == FALSE) {
+    if (s_row_count < row) {
         return FALSE;
     }
 
@@ -377,7 +377,7 @@ int insert_column(const color_t color, const size_t col)
         return FALSE;
     }
 
-    if (is_in_board_col(col) == FALSE) {
+    if (s_col_count < col) {
         return FALSE;
     }
 
