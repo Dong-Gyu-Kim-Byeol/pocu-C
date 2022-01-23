@@ -206,7 +206,7 @@ int place_stone(const color_t color, const size_t row, const size_t col)
             }
 
             /* horizontal, left */
-            for (col_i = col - 1; col_i != -1u; --col_i) {
+            for (col_i = col - 1; col_i != (size_t)-1; --col_i) {
                 if (s_board_color[row][col_i] != color) {
                     break;
                 }
@@ -236,7 +236,7 @@ int place_stone(const color_t color, const size_t row, const size_t col)
             }
 
             /* vertical, bottom */
-            for (row_i = row - 1; row_i != -1u; --row_i) {
+            for (row_i = row - 1; row_i != (size_t)-1; --row_i) {
                 if (s_board_color[row_i][col] != color) {
                     break;
                 }
@@ -349,7 +349,7 @@ int insert_row(const color_t color, const size_t row)
         size_t row_i;
         size_t col_i;
 
-        for (row_i = s_row_count - 1; row_i != -1u && row_i >= row; --row_i) {
+        for (row_i = s_row_count - 1; row_i != (size_t)-1 && row_i >= row; --row_i) {
             for (col_i = 0; col_i < s_col_count; ++col_i) {
                 s_board_color[row_i + 1][col_i] = s_board_color[row_i][col_i];
             }
@@ -394,7 +394,7 @@ int insert_column(const color_t color, const size_t col)
         size_t col_i;
 
         for (row_i = 0; row_i < s_row_count; ++row_i) {
-            for (col_i = s_col_count - 1; col_i != -1u && col_i >= col; --col_i) {
+            for (col_i = s_col_count - 1; col_i != (size_t)-1 && col_i >= col; --col_i) {
                 s_board_color[row_i][col_i + 1] = s_board_color[row_i][col_i];
             }
         }
