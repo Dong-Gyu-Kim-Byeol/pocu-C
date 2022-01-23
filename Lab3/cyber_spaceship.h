@@ -1,8 +1,6 @@
 #ifndef CYBER_SPACESHIP_H
 #define CYBER_SPACESHIP_H
 
-typedef unsigned int size_t;
-
 const char* get_longest_safe_zone_or_null(
     const char* const cab_start_location,
     const size_t cab_length,

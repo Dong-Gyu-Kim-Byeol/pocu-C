@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <math.h>
 
 #include "cyber_spaceship.h"
 
@@ -102,7 +101,7 @@ int get_travel_time(
     }
 
     if (cluster_count == 0) {
-        return (int)round(cab_length / SAFE_ZONE_DIV);
+        return (int)(((double)cab_length / SAFE_ZONE_DIV) + 0.5);
     }
 
     {
@@ -124,6 +123,6 @@ int get_travel_time(
             }
         }
 
-        return (int)round(safa_zone_count / SAFE_ZONE_DIV + (cab_length - safa_zone_count) / UNSAFE_ZONE_DIV);
+        return (int)(((double)safa_zone_count / SAFE_ZONE_DIV + (double)(cab_length - safa_zone_count) / UNSAFE_ZONE_DIV) + 0.5);
     }
 }
