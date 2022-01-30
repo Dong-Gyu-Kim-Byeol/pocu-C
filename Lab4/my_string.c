@@ -3,10 +3,12 @@
 
 void reverse(char* str)
 {
+    if (str == NULL) {
+        return;
+    }
+
     char* const p_str = str;
     char* const p_back = str + (str_length(str) - 1);
-
-    assert(str != NULL);
 
     reverse_start_end(p_str, p_back);
 }
