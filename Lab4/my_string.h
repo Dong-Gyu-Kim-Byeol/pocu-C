@@ -1,6 +1,7 @@
 #ifndef MY_STRING_H
 #define MY_STRING_H
 
+/* require */
 void reverse(char* str);
 
 int index_of(const char* str, const char* word);
@@ -14,6 +15,8 @@ char* reverse_tokenize(char* str_or_null, const char* delims);
 
 /* my function */
 size_t str_length(const char* const str);
+
+size_t rabin_karp(const char* const str, const char* const word);
 
 void reverse_start_end(char* const str_start, char* const str_include_end);
 

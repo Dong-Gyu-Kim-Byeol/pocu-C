@@ -10,6 +10,11 @@ int main(void)
     const char* const str = "   We   all   live   in a yellow submarine";
     char str_cpy[43];
     const char* token;
+
+    {
+        const char* const rabin_karp_str = "abracadabra";
+        assert(index_of(rabin_karp_str, "bra") == 1);
+    }
     
     strncpy(str_cpy, str, 42);
     str_cpy[42] = '\0';
