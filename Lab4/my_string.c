@@ -48,9 +48,15 @@ void reverse_by_words(char* str)
     assert(str != NULL);
 
     while (*p_str_first != '\0') {
-        char* p_str = p_str_first;
+        char* p_str;
 
-        while (*p_str != ' ' || *p_str != '\0') {
+        while (*p_str_first == ' ' || *p_str_first == '\0') {
+            ++p_str_first;
+        }
+
+        p_str = p_str_first;
+
+        while (*p_str != ' ' && *p_str != '\0') {
             ++p_str;
         }
 
@@ -83,7 +89,10 @@ char* reverse_tokenize(char* str_or_null, const char* delims)
 
     tokenize_get_start_and_end_or_null(str_or_null, delims, &p_token_start, &p_token_end);
 
-    reverse_start_end(p_token_start, p_token_end);
+    if (p_token_start != NULL) {
+        assert(p_token_end != NULL);
+        reverse_start_end(p_token_start, p_token_end);
+    }
 
     return p_token_start;
 }
@@ -111,6 +120,7 @@ void reverse_start_end(char* const str_start, char* const str_include_end)
     assert(str_start != NULL);
     assert(str_include_end != NULL);
     assert(*str_include_end != '\0');
+    assert(str_start <= str_include_end);
 
     while (p_front < p_back) {
         char temp = *p_back;
@@ -128,7 +138,7 @@ void tokenize_get_start_and_end_or_null(
     char** const out_token_start,
     char** const out_token_include_end)
 {
-    static char* s_str;
+    static char* s_str = NULL;
 
     assert(out_token_start != NULL);
     assert(out_token_include_end != NULL);
@@ -137,27 +147,44 @@ void tokenize_get_start_and_end_or_null(
         s_str = str_or_null;
     }
 
-    /*assert(s_str != NULL);*/
-    if (s_str == NULL) {
+    if (s_str == NULL || *s_str == '\0') {
         *out_token_start = NULL;
         *out_token_include_end = NULL;
         return;
     }
 
+    while (*s_str != '\0') {
+        const char* p_delims = delims;
+
+        while (*p_delims != '\0') {
+            if (*s_str == *p_delims) {
+                break;
+            }
+
+            ++p_delims;
+        }
+
+        if (*p_delims == '\0') {
+            break;
+        }
+
+        ++s_str;
+    }
+
     {
         char* const s_str_first = s_str;
+        ++s_str;
 
         while (*s_str != '\0') {
             const char* p_delims = delims;
 
-            /* hash_map ? */
             while (*p_delims != '\0') {
                 if (*s_str == *p_delims) {
                     *s_str = '\0';
                     ++s_str;
 
                     *out_token_start = s_str_first;
-                    *out_token_include_end = s_str - 2 >= s_str_first ? s_str - 2 : s_str_first;
+                    *out_token_include_end = s_str - 2;
                     return;
                 }
 
@@ -167,8 +194,11 @@ void tokenize_get_start_and_end_or_null(
             ++s_str;
         }
 
-        *out_token_start = NULL;
-        *out_token_include_end = NULL;
+        assert(*s_str == '\0');
+        *out_token_start = s_str_first;
+        *out_token_include_end = s_str - 1;
         return;
     }
+
+
 }
