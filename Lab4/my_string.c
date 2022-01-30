@@ -3,6 +3,8 @@
 
 void reverse(char* str)
 {
+    assert(str != NULL);
+
     if (*str == '\0') {
         return;
     }
@@ -17,7 +19,32 @@ void reverse(char* str)
 
 int index_of(const char* str, const char* word)
 {
-    return 0;
+    const char* p_str_first = str;
+
+    assert(str != NULL);
+    assert(word != NULL);
+
+    while (*p_str_first != '\0') {
+        const char* p_str = p_str_first;
+        const char* p_word = word;
+
+        while (*p_word != '\0' && *p_str == *p_word) {
+            ++p_str;
+            ++p_word;
+        }
+
+        if (*p_word == '\0') {
+            goto find;
+        }
+
+        ++p_str_first;
+    }
+
+    assert(*p_str_first == '\0');
+    return -1;
+
+find:
+    return p_str_first - str;
 }
 
 void reverse_by_words(char* str)
