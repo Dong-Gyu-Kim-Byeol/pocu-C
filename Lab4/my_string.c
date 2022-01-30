@@ -93,7 +93,19 @@ char* tokenize(char* str_or_null, const char* delims)
 
 char* reverse_tokenize(char* str_or_null, const char* delims)
 {
-    return NULL;
+    char* p_token_start;
+    char* p_token_end;
+
+    assert(delims != NULL);
+
+    tokenize_get_start_and_end_or_null(str_or_null, delims, &p_token_start, &p_token_end);
+
+    if (p_token_start != NULL) {
+        assert(p_token_end != NULL);
+        reverse_start_end(p_token_start, p_token_end);
+    }
+
+    return p_token_start;
 }
 
 
