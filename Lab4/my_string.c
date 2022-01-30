@@ -3,14 +3,16 @@
 
 void reverse(char* str)
 {
-    if (str == NULL) {
+    if (str == NULL || *str == '\0') {
         return;
     }
 
-    char* const p_str = str;
-    char* const p_back = str + (str_length(str) - 1);
+    {
+        char* const p_str = str;
+        char* const p_back = str + (str_length(str) - 1);
 
-    reverse_start_end(p_str, p_back);
+        reverse_start_end(p_str, p_back);
+    }
 }
 
 int index_of(const char* str, const char* word)
