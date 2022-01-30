@@ -21,6 +21,7 @@ int main(void)
     assert(index_of(str, "marine") == 36);
     assert(index_of(str, "all good") == -1);
     assert(index_of(str, "marinett") == -1);
+    assert(index_of(str, "") == 0);
     
     reverse(str_cpy);
     assert(strcmp(str_cpy, str) == 0);

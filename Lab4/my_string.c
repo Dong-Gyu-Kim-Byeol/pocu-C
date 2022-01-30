@@ -24,6 +24,10 @@ int index_of(const char* str, const char* word)
     assert(str != NULL);
     assert(word != NULL);
 
+    if (*word == '\0') {
+        return 0;
+    }
+
     while (*p_str_first != '\0') {
         const char* p_str = p_str_first;
         const char* p_word = word;
@@ -49,7 +53,29 @@ find:
 
 void reverse_by_words(char* str)
 {
-    return;
+    char* p_str_first = str;
+
+    assert(str != NULL);
+
+    while (*p_str_first != '\0') {
+        char* p_str;
+
+        while (*p_str_first == ' ') {
+            ++p_str_first;
+        }
+
+        p_str = p_str_first;
+
+        while (*p_str != ' ' && *p_str != '\0') {
+            ++p_str;
+        }
+
+        assert(*p_str == ' ' || *p_str == '\0');
+        assert(p_str_first <= p_str - 1);
+        reverse_start_end(p_str_first, p_str - 1);
+
+        p_str_first = p_str + 1;
+    }
 }
 
 char* tokenize(char* str_or_null, const char* delims)
