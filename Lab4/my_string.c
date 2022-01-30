@@ -3,7 +3,7 @@
 
 void reverse(char* str)
 {
-    if (str == NULL || *str == '\0') {
+    if (*str == '\0') {
         return;
     }
 
