@@ -55,6 +55,7 @@ void reverse_by_words(char* str)
         }
 
         assert(*p_str == ' ' || *p_str == '\0');
+        assert(p_str_first <= p_str - 1);
         reverse_start_end(p_str_first, p_str - 1);
 
         p_str_first = p_str + 1;
