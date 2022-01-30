@@ -81,7 +81,14 @@ void reverse_by_words(char* str)
 
 char* tokenize(char* str_or_null, const char* delims)
 {
-    return NULL;
+    char* p_token_start;
+    char* p_token_include_end;
+
+    assert(delims != NULL);
+
+    tokenize_get_start_and_end_or_null(str_or_null, delims, &p_token_start, &p_token_include_end);
+
+    return p_token_start;
 }
 
 char* reverse_tokenize(char* str_or_null, const char* delims)
