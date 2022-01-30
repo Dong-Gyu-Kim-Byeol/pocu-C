@@ -250,32 +250,32 @@ int place_stone(const color_t color, const size_t row, const size_t col)
             }
         }
 
-        /* left bottom to right top cross */
+        /* left bottom to right top */
         {
             int count = 0;
 
-            size_t cross_i;
+            size_t i;
 
-            /* left bottom to right top cross, top */
-            cross_i = 0;
-            while (is_in_board(row - cross_i, col + cross_i) == TRUE) {
-                if (s_board_color[row - cross_i][col + cross_i] != color) {
+            /* left bottom to right top, top */
+            i = 0;
+            while (is_in_board(row - i, col + i) == TRUE) {
+                if (s_board_color[row - i][col + i] != color) {
                     break;
                 }
 
-                ++cross_i;
+                ++i;
                 ++count;
             }
 
 
-            /* left bottom to right top cross, bottom */
-            cross_i = 1;
-            while (is_in_board(row + cross_i, col - cross_i) == TRUE) {
-                if (s_board_color[row + cross_i][col - cross_i] != color) {
+            /* left bottom to right top, bottom */
+            i = 1;
+            while (is_in_board(row + i, col - i) == TRUE) {
+                if (s_board_color[row + i][col - i] != color) {
                     break;
                 }
 
-                ++cross_i;
+                ++i;
                 ++count;
             }
 
@@ -285,31 +285,31 @@ int place_stone(const color_t color, const size_t row, const size_t col)
             }
         }
 
-        /* left top to right bottom cross cross */
+        /* left top to right bottom */
         {
             int count = 0;
 
-            size_t cross_i;
+            size_t i;
 
-            /* left top to right bottom cross, top */
-            cross_i = 0;
-            while (is_in_board(row - cross_i, col - cross_i) == TRUE) {
-                if (s_board_color[row - cross_i][col - cross_i] != color) {
+            /* left top to right bottom, top */
+            i = 0;
+            while (is_in_board(row - i, col - i) == TRUE) {
+                if (s_board_color[row - i][col - i] != color) {
                     break;
                 }
 
-                ++cross_i;
+                ++i;
                 ++count;
             }
 
-            /* left top to right bottom cross, bottom */
-            cross_i = 1;
-            while (is_in_board(row + cross_i, col + cross_i) == TRUE) {
-                if (s_board_color[row + cross_i][col + cross_i] != color) {
+            /* left top to right bottom, bottom */
+            i = 1;
+            while (is_in_board(row + i, col + i) == TRUE) {
+                if (s_board_color[row + i][col + i] != color) {
                     break;
                 }
 
-                ++cross_i;
+                ++i;
                 ++count;
             }
 
