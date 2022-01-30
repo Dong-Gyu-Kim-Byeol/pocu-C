@@ -199,6 +199,4 @@ void tokenize_get_start_and_end_or_null(
         *out_token_include_end = s_str - 1;
         return;
     }
-
-
 }
