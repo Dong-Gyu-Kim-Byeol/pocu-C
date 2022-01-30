@@ -60,6 +60,7 @@ void reverse_by_words(char* str)
     while (*p_str_first != '\0') {
         char* p_str;
 
+        /* skip */
         while (*p_str_first == ' ') {
             ++p_str_first;
         }
@@ -74,7 +75,7 @@ void reverse_by_words(char* str)
         assert(p_str_first <= p_str - 1);
         reverse_start_end(p_str_first, p_str - 1);
 
-        p_str_first = p_str + 1;
+        p_str_first = p_str;
     }
 }
 
@@ -144,6 +145,7 @@ void tokenize_get_start_and_end_or_null(
         return;
     }
 
+    /* skip */
     while (*s_str != '\0') {
         const char* p_delims = delims;
 
