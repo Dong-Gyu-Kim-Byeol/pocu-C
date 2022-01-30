@@ -128,7 +128,7 @@ void tokenize_get_start_and_end_or_null(
     char** const out_token_start,
     char** const out_token_include_end)
 {
-    static char* s_str = NULL;
+    static char* s_str;
 
     assert(out_token_start != NULL);
     assert(out_token_include_end != NULL);
@@ -137,7 +137,12 @@ void tokenize_get_start_and_end_or_null(
         s_str = str_or_null;
     }
 
-    assert(s_str != NULL);
+    /*assert(s_str != NULL);*/
+    if (s_str == NULL) {
+        *out_token_start = NULL;
+        *out_token_include_end = NULL;
+        return;
+    }
 
     {
         char* const s_str_first = s_str;
