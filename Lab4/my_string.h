@@ -16,7 +16,7 @@ char* reverse_tokenize(char* str_or_null, const char* delims);
 /* my function */
 size_t str_length(const char* const str);
 
-size_t rabin_karp(const char* const str, const char* const word);
+size_t index_of_rabin_karp(const char* const str, const char* const word);
 
 void reverse_start_end(char* const str_start, char* const str_include_end);
 

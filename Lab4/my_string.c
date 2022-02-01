@@ -19,7 +19,7 @@ void reverse(char* str)
 
 int index_of(const char* str, const char* word)
 {
-    return (int)rabin_karp(str, word);
+    return (int)index_of_rabin_karp(str, word);
 }
 
 void reverse_by_words(char* str)
@@ -94,7 +94,7 @@ size_t str_length(const char* const str)
     return p_str - str;
 }
 
-size_t rabin_karp(const char* const str, const char* const word)
+size_t index_of_rabin_karp(const char* const str, const char* const word)
 {
     const size_t MUL = 256;
     const size_t MOD_PRIME = 101;
