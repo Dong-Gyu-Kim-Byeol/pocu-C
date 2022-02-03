@@ -106,8 +106,9 @@ int print_receipt(const char* filename, time_t timestamp)
 
         {
             struct tm tm = *gmtime(&timestamp);
-            fprintf(stream, "%d-%02d-%02d %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-            fprintf(stream, "                          %05u\n", s_receipt_count);
+            fprintf(stream, "%04d-%02d-%02d %02d:%02d:%02d                          %05u\n",
+                tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec,
+                s_receipt_count);
             fprintf(stream, "--------------------------------------------------\n");
         }
 
@@ -119,31 +120,26 @@ int print_receipt(const char* filename, time_t timestamp)
                 size_t i;
 
                 for (i = 0; i < s_item_count; ++i) {
-                    fprintf(stream, "%33s", s_item_names[i]);
-                    fprintf(stream, "%17.2f\n", s_item_prices[i]);
+                    fprintf(stream, "%33s%17.2f\n", s_item_names[i], s_item_prices[i]);
                     subtotal += s_item_prices[i];
                 }
             }
 
-            fprintf(stream, "\n%33s", "Subtotal");
-            fprintf(stream, "%17.2f\n", subtotal);
+            fprintf(stream, "\n%33s%17.2f\n", "Subtotal", subtotal);
             total += subtotal;
 
             if (is_include_receipt_flag(s_receipt_flag, RECEIPT_FLAG_TIP)) {
-                fprintf(stream, "%33s", "Tip");
-                fprintf(stream, "%17.2f\n", s_tip_price);
+                fprintf(stream, "%33s%17.2f\n", "Tip", s_tip_price);
                 total += s_tip_price;
             }
 
             {
                 const double tax = subtotal * TAX_RATE;
-                fprintf(stream, "%33s", "Tax");
-                fprintf(stream, "%17.2f\n", tax);
+                fprintf(stream, "%33s%17.2f\n", "Tax", tax);
                 total += tax;
             }
 
-            fprintf(stream, "%33s", "Total");
-            fprintf(stream, "%17.2f\n\n", total);
+            fprintf(stream, "%33s%17.2f\n\n", "Total", total);
         }
 
         if (is_include_receipt_flag(s_receipt_flag, RECEIPT_FLAG_MESSAGE)) {
