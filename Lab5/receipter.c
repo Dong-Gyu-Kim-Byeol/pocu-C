@@ -1,12 +1,14 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "receipter.h"
-
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
+
+#include "receipter.h"
 
 #define MAX_ITEM_COUNT (10)
 #define MAX_ITEM_PRICE (999.99)
+#define MAX_ITEM_NAME_LENGTH (25)
 
 #define MAX_RECEIPT_COUNT (99999)
 #define MAX_RECEIPT_MESSAGE_LENGTH (75)
@@ -18,12 +20,12 @@
 
 
 static size_t s_item_count = 0;
-static const char* s_item_names[MAX_ITEM_COUNT] = { 0, };
+static char s_item_names[MAX_ITEM_COUNT][MAX_ITEM_NAME_LENGTH + 1] = { 0, };
 static double s_item_prices[MAX_ITEM_COUNT] = { 0, };
 
 static receipt_flag_t s_receipt_flag = RECEIPT_FLAG_EMPTY;
 static double s_tip_price = 0.;
-static const char* s_receipt_message = NULL;
+static char s_receipt_message[MAX_RECEIPT_MESSAGE_LENGTH + 1];
 
 
 /* required */
@@ -33,10 +35,12 @@ int add_item(const char* name, double price)
     assert(price <= MAX_ITEM_PRICE);
 
     if (s_item_count < MAX_ITEM_COUNT) {
-        s_item_names[s_item_count] = name;
-        s_item_prices[s_item_count] = price;
-        ++s_item_count;
+        strncpy(s_item_names[s_item_count], name, sizeof(s_item_names[0]));
+        s_item_names[s_item_count][sizeof(s_item_names[0]) - 1] = '\0';
 
+        s_item_prices[s_item_count] = price;
+
+        ++s_item_count;
         return TRUE;
     }
 
@@ -62,12 +66,13 @@ void set_message(const char* message)
 {
     assert(message != NULL);
 
-    s_receipt_message = message;
-
     if (*message == '\0') {
         clear_receipt_flag(&s_receipt_flag, RECEIPT_FLAG_MESSAGE);
         return;
     }
+
+    strncpy(s_receipt_message, message, sizeof(s_receipt_message));
+    s_receipt_message[sizeof(s_receipt_message) - 1] = '\0';
 
     set_receipt_flag(&s_receipt_flag, RECEIPT_FLAG_MESSAGE);
     return;
@@ -75,6 +80,8 @@ void set_message(const char* message)
 
 int print_receipt(const char* filename, time_t timestamp)
 {
+    const size_t MAX_LINE_LENGTH = 50;
+
     static unsigned int s_receipt_count = 0;
 
     int b_out;
@@ -142,7 +149,11 @@ int print_receipt(const char* filename, time_t timestamp)
         if (is_include_receipt_flag(s_receipt_flag, RECEIPT_FLAG_MESSAGE)) {
             const char* p_receipt_message = s_receipt_message;
 
-            while (*p_receipt_message != '\0' && p_receipt_message - s_receipt_message < MAX_RECEIPT_MESSAGE_LENGTH) {
+            while (*p_receipt_message != '\0') {
+                if (p_receipt_message - s_receipt_message == MAX_LINE_LENGTH) {
+                    fprintf(stream, "\n");
+                }
+
                 fprintf(stream, "%c", *p_receipt_message);
                 ++p_receipt_message;
             }

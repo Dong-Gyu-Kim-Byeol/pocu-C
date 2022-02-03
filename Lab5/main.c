@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <assert.h>
 #include <time.h>
+#include <string.h>
+
 #include "receipter.h"
 
 int main(void)
@@ -23,7 +25,8 @@ int main(void)
 
     set_tip(20.55);
 
-    set_message("Thanks for dining with us!");
+    set_message("Thanks for dining with us!a123456789b123456789c123456789d123456789e123456789f123456789");
+    assert(strlen("Thanks for dining with us!a123456789b123456789c123456789d123456789e12345678") == 75);
 
     assert(TRUE == print_receipt("receipt0.txt", time_now));
 
