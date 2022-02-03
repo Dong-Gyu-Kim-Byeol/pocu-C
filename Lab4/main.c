@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "my_string.h"
 
@@ -70,5 +71,6 @@ int main(void)
     token = reverse_tokenize(NULL, " ");
     assert(token == NULL);
 
+    printf("main end\n");
     return 0;
 }

@@ -278,6 +278,7 @@ void tokenize_get_start_and_end_or_null(
         assert(*s_str == '\0');
         *out_token_start = s_str_first;
         *out_token_include_end = s_str - 1;
+        s_str = NULL;
         return;
     }
 }
