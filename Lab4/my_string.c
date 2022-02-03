@@ -1,5 +1,6 @@
-#include "my_string.h"
 #include <assert.h>
+
+#include "my_string.h"
 
 void reverse(char* str)
 {
