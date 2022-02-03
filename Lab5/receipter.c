@@ -17,13 +17,11 @@
 #define TAX_RATE (0.05)
 
 
-static size_t s_receipt_count = 0;
-
 static size_t s_item_count = 0;
 static const char* s_item_names[MAX_ITEM_COUNT] = { 0, };
 static double s_item_prices[MAX_ITEM_COUNT] = { 0, };
 
-static receipt_include_flag_t s_receipt_include_flag = RECEIPT_INCLUDE_FLAG_EMPTY;
+static receipt_flag_t s_receipt_flag = RECEIPT_FLAG_EMPTY;
 static double s_tip_price = 0.;
 static const char* s_receipt_message = NULL;
 
@@ -52,11 +50,11 @@ void set_tip(double tip)
     s_tip_price = tip;
 
     if (s_tip_price == 0.0) {
-        clear_receipt_include_flag(&s_receipt_include_flag, RECEIPT_INCLUDE_FLAG_TIP);
+        clear_receipt_flag(&s_receipt_flag, RECEIPT_FLAG_TIP);
         return;
     }
 
-    set_receipt_include_flag(&s_receipt_include_flag, RECEIPT_INCLUDE_FLAG_TIP);
+    set_receipt_flag(&s_receipt_flag, RECEIPT_FLAG_TIP);
     return;
 }
 
@@ -67,16 +65,18 @@ void set_message(const char* message)
     s_receipt_message = message;
 
     if (*message == '\0') {
-        clear_receipt_include_flag(&s_receipt_include_flag, RECEIPT_INCLUDE_FLAG_MESSAGE);
+        clear_receipt_flag(&s_receipt_flag, RECEIPT_FLAG_MESSAGE);
         return;
     }
 
-    set_receipt_include_flag(&s_receipt_include_flag, RECEIPT_INCLUDE_FLAG_MESSAGE);
+    set_receipt_flag(&s_receipt_flag, RECEIPT_FLAG_MESSAGE);
     return;
 }
 
 int print_receipt(const char* filename, time_t timestamp)
 {
+    static unsigned int s_receipt_count = 0;
+
     int b_out;
     FILE* stream;
 
@@ -100,7 +100,7 @@ int print_receipt(const char* filename, time_t timestamp)
         {
             struct tm tm = *gmtime(&timestamp);
             fprintf(stream, "%d-%02d-%02d %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-            fprintf(stream, "                          %05llu\n", s_receipt_count);
+            fprintf(stream, "                          %05u\n", s_receipt_count);
             fprintf(stream, "--------------------------------------------------\n");
         }
 
@@ -122,7 +122,7 @@ int print_receipt(const char* filename, time_t timestamp)
             fprintf(stream, "%17.2f\n", subtotal);
             total += subtotal;
 
-            if (is_include_receipt_include_flag(s_receipt_include_flag, RECEIPT_INCLUDE_FLAG_TIP)) {
+            if (is_include_receipt_flag(s_receipt_flag, RECEIPT_FLAG_TIP)) {
                 fprintf(stream, "%33s", "Tip");
                 fprintf(stream, "%17.2f\n", s_tip_price);
                 total += s_tip_price;
@@ -139,7 +139,7 @@ int print_receipt(const char* filename, time_t timestamp)
             fprintf(stream, "%17.2f\n\n", total);
         }
 
-        if (is_include_receipt_include_flag(s_receipt_include_flag, RECEIPT_INCLUDE_FLAG_MESSAGE)) {
+        if (is_include_receipt_flag(s_receipt_flag, RECEIPT_FLAG_MESSAGE)) {
             const char* p_receipt_message = s_receipt_message;
 
             while (*p_receipt_message != '\0' && p_receipt_message - s_receipt_message < MAX_RECEIPT_MESSAGE_LENGTH) {
@@ -160,24 +160,24 @@ int print_receipt(const char* filename, time_t timestamp)
 
 out:
     s_item_count = 0;
-    s_receipt_include_flag = RECEIPT_INCLUDE_FLAG_EMPTY;
+    s_receipt_flag = RECEIPT_FLAG_EMPTY;
 
     return b_out;
 }
 
 
 /* my function */
-void set_receipt_include_flag(receipt_include_flag_t* const out_flag, const receipt_include_flag_t set_flag)
+void set_receipt_flag(receipt_flag_t* const out_flag, const receipt_flag_t set_flag)
 {
     *out_flag |= set_flag;
 }
 
-void clear_receipt_include_flag(receipt_include_flag_t* const out_flag, const receipt_include_flag_t clear_flag)
+void clear_receipt_flag(receipt_flag_t* const out_flag, const receipt_flag_t clear_flag)
 {
     *out_flag &= ~clear_flag;
 }
 
-int is_include_receipt_include_flag(const receipt_include_flag_t flag, const receipt_include_flag_t is_include_flag)
+int is_include_receipt_flag(const receipt_flag_t flag, const receipt_flag_t is_include_flag)
 {
     return flag & is_include_flag ? TRUE : FALSE;
 }
