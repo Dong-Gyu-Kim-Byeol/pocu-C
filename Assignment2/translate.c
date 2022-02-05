@@ -187,8 +187,8 @@ int translate(int argc, const char** argv)
         char from_c = *p_from_set;
         char to_c = *p_to_set;
 
-        size_t pre_range_from_end_index = -1;
-        size_t pre_range_to_end_index = -1;
+        int pre_range_from_end_index = -1;
+        int pre_range_to_end_index = -1;
         char range_end_from_c;
         char range_end_to_c;
 
@@ -212,6 +212,7 @@ int translate(int argc, const char** argv)
                 if (range_start_from_c == range_end_from_c) {
                     is_change_from = TRUE;
                     is_change_to = FALSE;
+                    from_c = range_end_from_c;
                     goto change_c;
                 }
 
@@ -234,6 +235,7 @@ int translate(int argc, const char** argv)
                 if (range_start_to_c == range_end_to_c) {
                     is_change_from = FALSE;
                     is_change_to = TRUE;
+                    to_c = range_end_to_c;
                     goto change_c;
                 }
 
