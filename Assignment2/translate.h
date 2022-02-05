@@ -19,8 +19,9 @@ int translate(int argc, const char** argv);
 /* my functoin */
 typedef enum translate_flag {
     TRANSLATE_FLAG_EMPTY = 0,
-    TRANSLATE_FLAG_RANGE = 1 << 0,
-    TRANSLATE_FLAG_I_IGNORE_CASE = 1 << 1
+    TRANSLATE_FLAG_I_IGNORE_CASE = 1 << 0,
+    TRANSLATE_FLAG_FROM_RANGE = 1 << 1,
+    TRANSLATE_FLAG_TO_RANGE = 1 << 2
 } translate_flag_t;
 
 void set_translate_flag(translate_flag_t* const out_flag, const translate_flag_t set_flag);

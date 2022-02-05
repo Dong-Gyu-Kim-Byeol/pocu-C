@@ -63,16 +63,19 @@ int translate(int argc, const char** argv)
             const char* p_argv_from_set = argv_from_set;
             const char* p_argv_to_set = argv_to_set;
 
-            size_t pre_range_end_index = -1;
+            size_t pre_range_from_end_index = -1;
+            size_t pre_range_to_end_index = -1;
 
             while (*p_argv_from_set != '\0') {
                 char from_c = *p_argv_from_set;
                 char to_c = *p_argv_to_set;
 
-                /* from_c */
                 const size_t now_from_set_index = p_argv_from_set - argv_from_set;
-                if (from_c == '-' && now_from_set_index > pre_range_end_index + 1 && *(p_argv_from_set + 1) != '\0') {
-                    set_translate_flag(&translate_flag, TRANSLATE_FLAG_RANGE);
+                const size_t now_to_set_index = p_argv_to_set - argv_to_set;
+
+                /* from_c */
+                if (from_c == '-' && now_from_set_index > pre_range_from_end_index + 1 && *(p_argv_from_set + 1) != '\0') {
+                    set_translate_flag(&translate_flag, TRANSLATE_FLAG_FROM_RANGE);
                 } else if (from_c == '\\') {
                     ++p_argv_from_set;
 
@@ -114,7 +117,9 @@ int translate(int argc, const char** argv)
                 }
 
                 /* to_c */
-                if (to_c == '\\') {
+                if (to_c == '-' && now_to_set_index > pre_range_to_end_index + 1 && *(p_argv_to_set + 1) != '\0') {
+                    set_translate_flag(&translate_flag, TRANSLATE_FLAG_TO_RANGE);
+                } else if (to_c == '\\') {
                     ++p_argv_to_set;
 
                     switch (*p_argv_to_set) {
@@ -155,12 +160,17 @@ int translate(int argc, const char** argv)
                 }
 
                 /* setting translate_set */
-                if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_RANGE) == TRUE) {
+                if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_FROM_RANGE) == TRUE) {
                     char range_start_from_c;
                     char range_end_from_c;
 
                     if (from_c == '-') {
-                        goto skip_c;
+                        ++p_argv_from_set;
+                        if (p_argv_from_set - argv_from_set >= MAX_ARGUMENT_SIZE) {
+                            return ERROR_CODE_ARGUMENT_TOO_LONG;
+                        }
+
+                        continue;
                     }
 
                     range_start_from_c = *(p_argv_from_set - 2);
@@ -180,16 +190,76 @@ int translate(int argc, const char** argv)
                             translate_set[(int)from_c] = to_c;
                         }
 
+
                         ++p_argv_to_set;
                         if (*p_argv_to_set == '\0') {
                             --p_argv_to_set;
                         }
+
                         ++from_c;
                     }
 
-                    --p_argv_to_set;
-                    pre_range_end_index = p_argv_from_set - argv_from_set;
-                    unset_translate_flag(&translate_flag, TRANSLATE_FLAG_RANGE);
+
+                    pre_range_from_end_index = p_argv_from_set - argv_from_set;
+                    unset_translate_flag(&translate_flag, TRANSLATE_FLAG_FROM_RANGE);
+
+                    ++p_argv_from_set;
+                    if (p_argv_from_set - argv_from_set >= MAX_ARGUMENT_SIZE) {
+                        return ERROR_CODE_ARGUMENT_TOO_LONG;
+                    }
+
+                    continue;
+
+                } else if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_TO_RANGE) == TRUE) {
+                    char range_start_to_c;
+                    char range_end_to_c;
+
+                    if (to_c == '-') {
+                        ++p_argv_to_set;
+                        if (*p_argv_to_set == '\0') {
+                            --p_argv_to_set;
+                        }
+
+                        continue;
+                    }
+
+                    range_start_to_c = *(p_argv_to_set - 2);
+                    range_end_to_c = to_c;
+                    if (range_start_to_c > range_end_to_c) {
+                        return ERROR_CODE_INVALID_RANGE;
+                    }
+
+                    to_c = range_start_to_c + 1;
+                    while (to_c <= range_end_to_c) {
+                        from_c = *p_argv_from_set;
+
+                        if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE) == TRUE) {
+                            translate_set[tolower(from_c)] = to_c;
+                            translate_set[toupper(from_c)] = to_c;
+                        } else {
+                            translate_set[(int)from_c] = to_c;
+                        }
+
+
+                        ++p_argv_from_set;
+                        if (p_argv_from_set - argv_from_set >= MAX_ARGUMENT_SIZE) {
+                            return ERROR_CODE_ARGUMENT_TOO_LONG;
+                        }
+
+                        ++to_c;
+                    }
+
+
+                    pre_range_to_end_index = p_argv_to_set - argv_to_set;
+                    unset_translate_flag(&translate_flag, TRANSLATE_FLAG_TO_RANGE);
+
+                    ++p_argv_to_set;
+                    if (*p_argv_to_set == '\0') {
+                        --p_argv_to_set;
+                    }
+
+                    continue;
+
                 } else if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE) == TRUE) {
                     translate_set[tolower(from_c)] = to_c;
                     translate_set[toupper(from_c)] = to_c;
@@ -197,11 +267,12 @@ int translate(int argc, const char** argv)
                     translate_set[(int)from_c] = to_c;
                 }
 
+
                 ++p_argv_to_set;
                 if (*p_argv_to_set == '\0') {
                     --p_argv_to_set;
                 }
-            skip_c:
+
                 ++p_argv_from_set;
                 if (p_argv_from_set - argv_from_set >= MAX_ARGUMENT_SIZE) {
                     return ERROR_CODE_ARGUMENT_TOO_LONG;

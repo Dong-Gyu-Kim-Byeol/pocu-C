@@ -5,23 +5,3 @@ jjjjjjj
 jjjjjjj
 jjjjjjj
 
-
-// output7
-jjjjjjj
-ddddddd
-eeeeeee
-jjjjjjj
-jjjjjjj
-jjjjjjj
-
-
-// input7
-aaaaaaa
-bbbbbbb
--------
-]]]]]]]
-^^^^^^^
-aaaaaaa
-
-// a.exe a-b-\\-a cdefj < inputs/input7.txt > outputs/output7.txt
-// ab-(\\~a) cdef(j~)
