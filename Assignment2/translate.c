@@ -29,13 +29,31 @@ int translate(int argc, const char** argv)
         }
 
         if (argc == 4) {
+            const char* p_flags = argv[1];
+
             argv_from_set = argv[2];
             argv_to_set = argv[3];
 
-            if (argv[1][0] != '-' && argv[1][1] != 'i') {
+            if (p_flags[0] != '-') {
                 return ERROR_CODE_INVALID_FLAG;
             }
-            set_translate_flag(&translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE);
+            ++p_flags;
+
+            while (*p_flags != '\0') {
+                switch (*p_flags) {
+                case 'i':
+                    if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE) == TRUE) {
+                        return ERROR_CODE_INVALID_FLAG;
+                    }
+                    set_translate_flag(&translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE);
+                    break;
+
+                default:
+                    return ERROR_CODE_INVALID_FLAG;
+                }
+
+                ++p_flags;
+            }
         }
 
         assert(argv_from_set != NULL);
@@ -51,6 +69,7 @@ int translate(int argc, const char** argv)
                 char from_c = *p_argv_from_set;
                 char to_c = *p_argv_to_set;
 
+                /* from_c */
                 const size_t now_from_set_index = p_argv_from_set - argv_from_set;
                 if (from_c == '-' && now_from_set_index > pre_range_end_index + 1 && *(p_argv_from_set + 1) != '\0') {
                     set_translate_flag(&translate_flag, TRANSLATE_FLAG_RANGE);
@@ -94,6 +113,48 @@ int translate(int argc, const char** argv)
                     }
                 }
 
+                /* to_c */
+                if (to_c == '\\') {
+                    ++p_argv_to_set;
+
+                    switch (*p_argv_to_set) {
+                    case '\\':
+                        to_c = '\\';
+                        break;
+                    case 'a':
+                        to_c = '\a';
+                        break;
+                    case 'b':
+                        to_c = '\b';
+                        break;
+                    case 'f':
+                        to_c = '\f';
+                        break;
+                    case 'n':
+                        to_c = '\n';
+                        break;
+                    case 'r':
+                        to_c = '\r';
+                        break;
+                    case 't':
+                        to_c = '\t';
+                        break;
+                    case 'v':
+                        to_c = '\v';
+                        break;
+                    case '\'':
+                        to_c = '\'';
+                        break;
+                    case '\"':
+                        to_c = '\"';
+                        break;
+
+                    default:
+                        return ERROR_CODE_INVALID_FORMAT;
+                    }
+                }
+
+                /* setting translate_set */
                 if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_RANGE) == TRUE) {
                     char range_start_from_c;
                     char range_end_from_c;
