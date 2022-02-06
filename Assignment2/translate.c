@@ -225,6 +225,9 @@ error_code_t translate_combine_escape(const char* const argv_set, char* const ou
         }
 
         ++p_argv_set;
+        if (p_argv_set - argv_set > MAX_ARGUMENT_SIZE - 1) {
+            return ERROR_CODE_ARGUMENT_TOO_LONG;
+        }
     }
 
     *p_out_combine_escape_set = '\0';
