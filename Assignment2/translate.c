@@ -118,12 +118,16 @@ int translate(int argc, const char** argv)
 
                 if (from_c == '\\') {
                     ++p_argv_from_set;
-                    translate_get_escape(p_argv_from_set, &from_c);
+                    if (translate_get_escape(p_argv_from_set, &from_c) == ERROR_CODE_INVALID_FORMAT) {
+                        return ERROR_CODE_INVALID_FORMAT;
+                    }
                 }
 
                 if (to_c == '\\') {
                     ++p_argv_to_set;
-                    translate_get_escape(p_argv_to_set, &to_c);
+                    if (translate_get_escape(p_argv_to_set, &to_c) == ERROR_CODE_INVALID_FORMAT) {
+                        return ERROR_CODE_INVALID_FORMAT;
+                    }
                 }
 
                 *p_from_set = from_c;
