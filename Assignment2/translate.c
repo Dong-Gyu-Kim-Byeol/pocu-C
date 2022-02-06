@@ -276,8 +276,6 @@ int translate(int argc, const char** argv)
         FILE* const input = stdin;
         FILE* const output = stdout;
 
-        int is_escape_pre_input_c = FALSE;
-
         while (TRUE) {
             char* p_line = line;
 
@@ -288,28 +286,16 @@ int translate(int argc, const char** argv)
 
             while (*p_line != '\0') {
                 char input_c = *p_line;
-                char to_c;
+                char to_c = translate_set[(int)input_c];
 
-                if (is_escape_pre_input_c == TRUE) {
-                    is_escape_pre_input_c = FALSE;
-                    translate_get_escape(p_line, &input_c);
-                } else if (*p_line == '\\') {
-                    ++p_line;
-                    is_escape_pre_input_c = TRUE;
-                    continue;
-                }
-
-                to_c = translate_set[(int)input_c];
                 if (to_c != 0) {
-                    fprintf(output, "%c", to_c);
-                } else {
-                    fprintf(output, "%c", input_c);
+                    *p_line = to_c;
                 }
 
                 ++p_line;
             }
 
-            fflush(output);
+            fprintf(output, "%s", line);
         }
     }
 
