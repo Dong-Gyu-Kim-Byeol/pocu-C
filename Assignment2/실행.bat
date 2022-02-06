@@ -11,5 +11,6 @@ a.exe a-c f-h < inputs/input9.txt > outputs/output9.txt
 a.exe a-c-h A-CGH < inputs/input10.txt > outputs/output10.txt
 a.exe -b-g AB-G < inputs/input11.txt > outputs/output11.txt
 a.exe abc- AB-D < inputs/input12.txt > outputs/output12.txt
+a.exe ab-h A-E < inputs/input13.txt > outputs/output13.txt
 
 pause

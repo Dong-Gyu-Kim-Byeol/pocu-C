@@ -9,6 +9,47 @@
 #define MAX_ARGUMENT_SIZE (512)
 #define LINE_SIZE (1024)
 
+int translate_get_escape(const char* const p_input_escape, char* const out_c)
+{
+    switch (*p_input_escape) {
+    case '\\':
+        *out_c = '\\';
+        break;
+    case 'a':
+        *out_c = '\a';
+        break;
+    case 'b':
+        *out_c = '\b';
+        break;
+    case 'f':
+        *out_c = '\f';
+        break;
+    case 'n':
+        *out_c = '\n';
+        break;
+    case 'r':
+        *out_c = '\r';
+        break;
+    case 't':
+        *out_c = '\t';
+        break;
+    case 'v':
+        *out_c = '\v';
+        break;
+    case '\'':
+        *out_c = '\'';
+        break;
+    case '\"':
+        *out_c = '\"';
+        break;
+
+    default:
+        return ERROR_CODE_INVALID_FORMAT;
+    }
+
+    return 0;
+}
+
 int translate(int argc, const char** argv)
 {
     char translate_set[MAX_SET_SIZE] = { 0, };
@@ -77,82 +118,12 @@ int translate(int argc, const char** argv)
 
                 if (from_c == '\\') {
                     ++p_argv_from_set;
-
-                    switch (*p_argv_from_set) {
-                    case '\\':
-                        from_c = '\\';
-                        break;
-                    case 'a':
-                        from_c = '\a';
-                        break;
-                    case 'b':
-                        from_c = '\b';
-                        break;
-                    case 'f':
-                        from_c = '\f';
-                        break;
-                    case 'n':
-                        from_c = '\n';
-                        break;
-                    case 'r':
-                        from_c = '\r';
-                        break;
-                    case 't':
-                        from_c = '\t';
-                        break;
-                    case 'v':
-                        from_c = '\v';
-                        break;
-                    case '\'':
-                        from_c = '\'';
-                        break;
-                    case '\"':
-                        from_c = '\"';
-                        break;
-
-                    default:
-                        return ERROR_CODE_INVALID_FORMAT;
-                    }
+                    translate_get_escape(p_argv_from_set, &from_c);
                 }
 
                 if (to_c == '\\') {
                     ++p_argv_to_set;
-
-                    switch (*p_argv_to_set) {
-                    case '\\':
-                        to_c = '\\';
-                        break;
-                    case 'a':
-                        to_c = '\a';
-                        break;
-                    case 'b':
-                        to_c = '\b';
-                        break;
-                    case 'f':
-                        to_c = '\f';
-                        break;
-                    case 'n':
-                        to_c = '\n';
-                        break;
-                    case 'r':
-                        to_c = '\r';
-                        break;
-                    case 't':
-                        to_c = '\t';
-                        break;
-                    case 'v':
-                        to_c = '\v';
-                        break;
-                    case '\'':
-                        to_c = '\'';
-                        break;
-                    case '\"':
-                        to_c = '\"';
-                        break;
-
-                    default:
-                        return ERROR_CODE_INVALID_FORMAT;
-                    }
+                    translate_get_escape(p_argv_to_set, &to_c);
                 }
 
                 *p_from_set = from_c;
@@ -305,6 +276,8 @@ int translate(int argc, const char** argv)
         FILE* const input = stdin;
         FILE* const output = stdout;
 
+        int is_escape_pre_input_c = FALSE;
+
         while (TRUE) {
             char* p_line = line;
 
@@ -314,15 +287,29 @@ int translate(int argc, const char** argv)
             }
 
             while (*p_line != '\0') {
-                const char to_c = translate_set[(int)*p_line];
+                char input_c = *p_line;
+                char to_c;
+
+                if (is_escape_pre_input_c == TRUE) {
+                    is_escape_pre_input_c = FALSE;
+                    translate_get_escape(p_line, &input_c);
+                } else if (*p_line == '\\') {
+                    ++p_line;
+                    is_escape_pre_input_c = TRUE;
+                    continue;
+                }
+
+                to_c = translate_set[(int)input_c];
                 if (to_c != 0) {
-                    *p_line = to_c;
+                    fprintf(output, "%c", to_c);
+                } else {
+                    fprintf(output, "%c", input_c);
                 }
 
                 ++p_line;
             }
 
-            fprintf(output, "%s", line);
+            fflush(output);
         }
     }
 
