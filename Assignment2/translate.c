@@ -3,52 +3,16 @@
 #include <memory.h>
 #include <ctype.h>
 
+
 #include "translate.h"
+static error_code_t translate_combine_escape(const char* const argv_set, char* const out_combine_escape_set);
+static error_code_t translate_range_extension(const char* const combine_escape_set, char* const out_range_extension_set);
+
 
 #define MAX_SET_SIZE (255)
 #define MAX_ARGUMENT_SIZE (512)
 #define LINE_SIZE (1024)
 
-int translate_get_escape(const char* const p_input_escape, char* const out_c)
-{
-    switch (*p_input_escape) {
-    case '\\':
-        *out_c = '\\';
-        break;
-    case 'a':
-        *out_c = '\a';
-        break;
-    case 'b':
-        *out_c = '\b';
-        break;
-    case 'f':
-        *out_c = '\f';
-        break;
-    case 'n':
-        *out_c = '\n';
-        break;
-    case 'r':
-        *out_c = '\r';
-        break;
-    case 't':
-        *out_c = '\t';
-        break;
-    case 'v':
-        *out_c = '\v';
-        break;
-    case '\'':
-        *out_c = '\'';
-        break;
-    case '\"':
-        *out_c = '\"';
-        break;
-
-    default:
-        return ERROR_CODE_INVALID_FORMAT;
-    }
-
-    return 0;
-}
 
 int translate(int argc, const char** argv)
 {
@@ -61,216 +25,99 @@ int translate(int argc, const char** argv)
 
     /* setting from_set, to_set */
     {
+        char tmep_escape_from_set[MAX_ARGUMENT_SIZE];
+        char tmep_escape_to_set[MAX_ARGUMENT_SIZE];
+
         const char* argv_from_set = NULL;
         const char* argv_to_set = NULL;
 
-        if (argc != 3 && argc != 4) {
-            return ERROR_CODE_WRONG_ARGUMENTS_NUMBER;
-        }
-
-        if (argc == 3) {
-            argv_from_set = argv[1];
-            argv_to_set = argv[2];
-        }
-
-        if (argc == 4) {
-            const char* p_flags = argv[1];
-
-            argv_from_set = argv[2];
-            argv_to_set = argv[3];
-
-            if (p_flags[0] != '-') {
-                return ERROR_CODE_INVALID_FLAG;
+        /* check argument, setting flag */
+        {
+            if (argc != 3 && argc != 4) {
+                return ERROR_CODE_WRONG_ARGUMENTS_NUMBER;
             }
-            ++p_flags;
 
-            while (*p_flags != '\0') {
-                switch (*p_flags) {
-                case 'i':
-                    if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE) == TRUE) {
-                        return ERROR_CODE_INVALID_FLAG;
-                    }
-                    set_translate_flag(&translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE);
-                    break;
+            if (argc == 3) {
+                argv_from_set = argv[1];
+                argv_to_set = argv[2];
+            }
 
-                default:
+            if (argc == 4) {
+                const char* p_flags = argv[1];
+
+                argv_from_set = argv[2];
+                argv_to_set = argv[3];
+
+                if (p_flags[0] != '-') {
                     return ERROR_CODE_INVALID_FLAG;
                 }
-
                 ++p_flags;
+
+                while (*p_flags != '\0') {
+                    switch (*p_flags) {
+                    case 'i':
+                        if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE) == TRUE) {
+                            return ERROR_CODE_INVALID_FLAG;
+                        }
+                        set_translate_flag(&translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE);
+                        break;
+
+                    default:
+                        return ERROR_CODE_INVALID_FLAG;
+                    }
+
+                    ++p_flags;
+                }
             }
         }
 
         assert(argv_from_set != NULL);
         assert(argv_to_set != NULL);
 
-        /* check escape */
+        /* combine escape character */
         {
-            const char* p_argv_from_set = argv_from_set;
-            const char* p_argv_to_set = argv_to_set;
-
-            char* p_from_set = from_set;
-            char* p_to_set = to_set;
-
-            while (*p_argv_from_set != '\0') {
-                char from_c = *p_argv_from_set;
-                char to_c = *p_argv_to_set;
-
-                if (from_c == '\\') {
-                    ++p_argv_from_set;
-                    if (translate_get_escape(p_argv_from_set, &from_c) == ERROR_CODE_INVALID_FORMAT) {
-                        return ERROR_CODE_INVALID_FORMAT;
-                    }
-                }
-
-                if (to_c == '\\') {
-                    ++p_argv_to_set;
-                    if (translate_get_escape(p_argv_to_set, &to_c) == ERROR_CODE_INVALID_FORMAT) {
-                        return ERROR_CODE_INVALID_FORMAT;
-                    }
-                }
-
-                *p_from_set = from_c;
-                *p_to_set = to_c;
-                ++p_from_set;
-                ++p_to_set;
-
-                ++p_argv_from_set;
-                if (p_argv_from_set - argv_from_set >= MAX_ARGUMENT_SIZE) {
-                    return ERROR_CODE_ARGUMENT_TOO_LONG;
-                }
-
-                ++p_argv_to_set;
-                if (p_argv_to_set - argv_to_set >= MAX_ARGUMENT_SIZE) {
-                    return ERROR_CODE_ARGUMENT_TOO_LONG;
-                }
-                if (*p_argv_to_set == '\0') {
-                    --p_argv_to_set;
-                }
+            error_code_t error = translate_combine_escape(argv_from_set, tmep_escape_from_set);
+            if (error != ERROR_CODE_NO_ERROR) {
+                return error;
             }
 
-            *p_from_set = '\0';
-            *p_to_set = '\0';
+            error = translate_combine_escape(argv_to_set, tmep_escape_to_set);
+            if (error != ERROR_CODE_NO_ERROR) {
+                return error;
+            }
+        }
+
+        /* range extension */
+        {
+            error_code_t error = translate_range_extension(tmep_escape_from_set, from_set);
+            if (error != ERROR_CODE_NO_ERROR) {
+                return error;
+            }
+
+            error = translate_range_extension(tmep_escape_to_set, to_set);
+            if (error != ERROR_CODE_NO_ERROR) {
+                return error;
+            }
         }
     }
 
     /* setting translate_set */
     {
-        const char* p_from_set = from_set;
-        const char* p_to_set = to_set;
+        char* p_from_set = from_set;
+        char* p_to_set = to_set;
 
-        char from_c = *p_from_set;
-        char to_c = *p_to_set;
-
-        int pre_range_from_end_index = -1;
-        int pre_range_to_end_index = -1;
-        char range_end_from_c;
-        char range_end_to_c;
-
-        while (from_c != '\0') {
-            int is_change_from = TRUE;
-            int is_change_to = TRUE;
-
-            /* check from_c */
-            if (from_c == '-' && p_from_set - from_set > pre_range_from_end_index + 1 && *(p_from_set + 1) != '\0') {
-                char range_start_from_c;
-
-                set_translate_flag(&translate_flag, TRANSLATE_FLAG_FROM_RANGE);
-                ++p_from_set;
-
-                range_start_from_c = *(p_from_set - 2);
-                range_end_from_c = *p_from_set;
-                if (range_start_from_c > range_end_from_c) {
-                    return ERROR_CODE_INVALID_RANGE;
-                }
-
-                if (range_start_from_c == range_end_from_c) {
-                    is_change_from = TRUE;
-                    is_change_to = FALSE;
-                    from_c = range_end_from_c;
-                    goto change_c;
-                }
-
-                from_c = range_start_from_c + 1;
-            }
-
-
-            /* check to_c */
-            if (to_c == '-' && p_to_set - to_set > pre_range_to_end_index + 1 && *(p_to_set + 1) != '\0') {
-                char range_start_to_c;
-
-                set_translate_flag(&translate_flag, TRANSLATE_FLAG_TO_RANGE);
-                ++p_to_set;
-
-                range_start_to_c = *(p_to_set - 2);
-                range_end_to_c = *p_to_set;
-                if (range_start_to_c > range_end_to_c) {
-                    return ERROR_CODE_INVALID_RANGE;
-                }
-
-                if (range_start_to_c == range_end_to_c) {
-                    is_change_from = FALSE;
-                    is_change_to = TRUE;
-                    to_c = range_end_to_c;
-                    goto change_c;
-                }
-
-                to_c = range_start_to_c + 1;
-            }
-
-
-            /* setting translate_set */
+        while (*p_from_set != '\0') {
             if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE) == TRUE) {
-                translate_set[tolower(from_c)] = to_c;
-                translate_set[toupper(from_c)] = to_c;
+                translate_set[toupper(*p_from_set)] = *p_to_set;
+                translate_set[tolower(*p_from_set)] = *p_to_set;
             } else {
-                translate_set[(int)from_c] = to_c;
+                translate_set[(int)*p_from_set] = *p_to_set;
             }
 
-
-        change_c:
-            /* set next from_c */
-            if (is_change_from == TRUE) {
-                int is_increase_p_from_set = TRUE;
-
-                if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_FROM_RANGE) == TRUE) {
-                    if (from_c < range_end_from_c) {
-                        ++from_c;
-                        is_increase_p_from_set = FALSE;
-                    } else {
-                        pre_range_from_end_index = p_from_set - from_set;
-                        unset_translate_flag(&translate_flag, TRANSLATE_FLAG_FROM_RANGE);
-                    }
-                }
-
-                if (is_increase_p_from_set == TRUE) {
-                    ++p_from_set;
-                    from_c = *p_from_set;
-                }
-            }
-
-            /* set next to_c */
-            if (is_change_to == TRUE) {
-                int is_increase_p_to_set = TRUE;
-
-                if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_TO_RANGE) == TRUE) {
-                    if (to_c < range_end_to_c) {
-                        ++to_c;
-                        is_increase_p_to_set = FALSE;
-                    } else {
-                        pre_range_to_end_index = p_to_set - to_set;
-                        unset_translate_flag(&translate_flag, TRANSLATE_FLAG_TO_RANGE);
-                    }
-                }
-
-                if (is_increase_p_to_set == TRUE) {
-                    ++p_to_set;
-                    if (*p_to_set == '\0') {
-                        --p_to_set;
-                    }
-
-                    to_c = *p_to_set;
-                }
+            ++p_from_set;
+            ++p_to_set;
+            if (*p_to_set == '\0') {
+                --p_to_set;
             }
         }
     }
@@ -321,4 +168,134 @@ void unset_translate_flag(translate_flag_t* const out_flag, const translate_flag
 int is_set_translate_flag(const translate_flag_t flag, const translate_flag_t is_set_flag)
 {
     return flag & is_set_flag ? TRUE : FALSE;
+}
+
+error_code_t translate_combine_escape(const char* const argv_set, char* const out_combine_escape_set)
+{
+    const char* p_argv_set = argv_set;
+    char* p_out_combine_escape_set = out_combine_escape_set;
+
+    while (*p_argv_set != '\0') {
+        char c = *p_argv_set;
+
+        if (c == '\\') {
+            ++p_argv_set;
+
+            switch (*p_argv_set) {
+            case '\\':
+                c = '\\';
+                break;
+            case 'a':
+                c = '\a';
+                break;
+            case 'b':
+                c = '\b';
+                break;
+            case 'f':
+                c = '\f';
+                break;
+            case 'n':
+                c = '\n';
+                break;
+            case 'r':
+                c = '\r';
+                break;
+            case 't':
+                c = '\t';
+                break;
+            case 'v':
+                c = '\v';
+                break;
+            case '\'':
+                c = '\'';
+                break;
+            case '\"':
+                c = '\"';
+                break;
+
+            default:
+                return ERROR_CODE_INVALID_FORMAT;
+            }
+        }
+
+        *p_out_combine_escape_set = c;
+        ++p_out_combine_escape_set;
+        if (p_out_combine_escape_set - out_combine_escape_set > MAX_ARGUMENT_SIZE - 2) {
+            return ERROR_CODE_ARGUMENT_TOO_LONG;
+        }
+
+        ++p_argv_set;
+    }
+
+    *p_out_combine_escape_set = '\0';
+
+    return ERROR_CODE_NO_ERROR;
+}
+
+error_code_t translate_range_extension(const char* const combine_escape_set, char* const out_range_extension_set)
+{
+    char* p_out_range_extension_set = out_range_extension_set;
+
+    const char* p_combine_escape_set = combine_escape_set;
+    char c = *p_combine_escape_set;
+
+    int pre_range_end_index = -1;
+    char range_end_c;
+
+    translate_flag_t translate_flag = TRANSLATE_FLAG_EMPTY;
+
+    while (c != '\0') {
+        /* check c */
+        if (c == '-' && p_combine_escape_set - combine_escape_set > pre_range_end_index + 1 && *(p_combine_escape_set + 1) != '\0') {
+            char range_start_from_c;
+
+            set_translate_flag(&translate_flag, TRANSLATE_FLAG_FROM_RANGE);
+            ++p_combine_escape_set;
+
+            range_start_from_c = *(p_combine_escape_set - 2);
+            range_end_c = *p_combine_escape_set;
+            if (range_start_from_c > range_end_c) {
+                return ERROR_CODE_INVALID_RANGE;
+            }
+
+            if (range_start_from_c == range_end_c) {
+                c = range_end_c;
+                goto change_c;
+            }
+
+            c = range_start_from_c + 1;
+        }
+
+        /* setting set */
+        *p_out_range_extension_set = c;
+        ++p_out_range_extension_set;
+        if (p_out_range_extension_set - out_range_extension_set > MAX_ARGUMENT_SIZE - 2) {
+            return ERROR_CODE_ARGUMENT_TOO_LONG;
+        }
+
+    change_c:
+        /* set next c */
+        {
+            int is_increase_p_combine_escape_set = TRUE;
+
+            if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_FROM_RANGE) == TRUE) {
+                if (c < range_end_c) {
+                    ++c;
+                    is_increase_p_combine_escape_set = FALSE;
+                } else {
+                    pre_range_end_index = p_combine_escape_set - combine_escape_set;
+                    unset_translate_flag(&translate_flag, TRANSLATE_FLAG_FROM_RANGE);
+                }
+            }
+
+            if (is_increase_p_combine_escape_set == TRUE) {
+                ++p_combine_escape_set;
+                c = *p_combine_escape_set;
+            }
+        }
+    }
+
+    *p_out_range_extension_set = '\0';
+
+    return ERROR_CODE_NO_ERROR;
 }

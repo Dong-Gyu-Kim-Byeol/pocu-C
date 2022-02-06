@@ -6,6 +6,7 @@
 
 /* required */
 typedef enum error_code {
+    ERROR_CODE_NO_ERROR = 0,
     ERROR_CODE_WRONG_ARGUMENTS_NUMBER = 1,
     ERROR_CODE_INVALID_FLAG,
     ERROR_CODE_INVALID_FORMAT,
