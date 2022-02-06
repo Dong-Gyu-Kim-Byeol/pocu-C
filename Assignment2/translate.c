@@ -167,6 +167,9 @@ int translate(int argc, const char** argv)
         char range_end_from_c;
         char range_end_to_c;
 
+        size_t from_c_count = 0;
+        size_t to_c_count = 0;
+
         while (from_c != '\0') {
             int is_change_from = TRUE;
             int is_change_to = TRUE;
@@ -220,6 +223,15 @@ int translate(int argc, const char** argv)
 
 
             /* setting translate_set */
+            ++from_c_count;
+            if (from_c_count >= MAX_ARGUMENT_SIZE) {
+                return ERROR_CODE_ARGUMENT_TOO_LONG;
+            }
+            ++to_c_count;
+            if (to_c_count >= MAX_ARGUMENT_SIZE) {
+                return ERROR_CODE_ARGUMENT_TOO_LONG;
+            }
+
             if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE) == TRUE) {
                 translate_set[tolower(from_c)] = to_c;
                 translate_set[toupper(from_c)] = to_c;
