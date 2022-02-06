@@ -219,6 +219,7 @@ int translate(int argc, const char** argv)
                 from_c = range_start_from_c + 1;
             }
 
+
             /* check to_c */
             if (to_c == '-' && p_to_set - to_set > pre_range_to_end_index + 1 && *(p_to_set + 1) != '\0') {
                 char range_start_to_c;
@@ -227,7 +228,7 @@ int translate(int argc, const char** argv)
                 ++p_to_set;
 
                 range_start_to_c = *(p_to_set - 2);
-                range_end_to_c = to_c;
+                range_end_to_c = *p_to_set;
                 if (range_start_to_c > range_end_to_c) {
                     return ERROR_CODE_INVALID_RANGE;
                 }
