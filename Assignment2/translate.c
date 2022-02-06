@@ -220,7 +220,7 @@ error_code_t translate_combine_escape(const char* const argv_set, char* const ou
 
         *p_out_combine_escape_set = c;
         ++p_out_combine_escape_set;
-        if (p_out_combine_escape_set - out_combine_escape_set > MAX_ARGUMENT_SIZE - 2) {
+        if (p_out_combine_escape_set - out_combine_escape_set > MAX_ARGUMENT_SIZE - 1) {
             return ERROR_CODE_ARGUMENT_TOO_LONG;
         }
 
