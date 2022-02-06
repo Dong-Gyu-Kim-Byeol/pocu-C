@@ -25,8 +25,8 @@ int translate(int argc, const char** argv)
 
     /* setting from_set, to_set */
     {
-        char tmep_escape_from_set[MAX_ARGUMENT_SIZE];
-        char tmep_escape_to_set[MAX_ARGUMENT_SIZE];
+        char tmep_combine_escape_from_set[MAX_ARGUMENT_SIZE];
+        char tmep_combine_escape_to_set[MAX_ARGUMENT_SIZE];
 
         const char* argv_from_set = NULL;
         const char* argv_to_set = NULL;
@@ -76,12 +76,12 @@ int translate(int argc, const char** argv)
 
         /* combine escape character */
         {
-            error_code_t error = translate_combine_escape(argv_from_set, tmep_escape_from_set);
+            error_code_t error = translate_combine_escape(argv_from_set, tmep_combine_escape_from_set);
             if (error != ERROR_CODE_NO_ERROR) {
                 return error;
             }
 
-            error = translate_combine_escape(argv_to_set, tmep_escape_to_set);
+            error = translate_combine_escape(argv_to_set, tmep_combine_escape_to_set);
             if (error != ERROR_CODE_NO_ERROR) {
                 return error;
             }
@@ -89,12 +89,12 @@ int translate(int argc, const char** argv)
 
         /* range extension */
         {
-            error_code_t error = translate_range_extension(tmep_escape_from_set, from_set);
+            error_code_t error = translate_range_extension(tmep_combine_escape_from_set, from_set);
             if (error != ERROR_CODE_NO_ERROR) {
                 return error;
             }
 
-            error = translate_range_extension(tmep_escape_to_set, to_set);
+            error = translate_range_extension(tmep_combine_escape_to_set, to_set);
             if (error != ERROR_CODE_NO_ERROR) {
                 return error;
             }
