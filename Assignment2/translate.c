@@ -176,7 +176,13 @@ error_code_t translate_combine_escape(const char* const argv_set, char* const ou
     char* p_out_combine_escape_set = out_combine_escape_set;
 
     while (*p_argv_set != '\0') {
-        char c = *p_argv_set;
+        char c;
+
+        if (p_argv_set - argv_set > MAX_ARGUMENT_SIZE - 2) {
+            return ERROR_CODE_ARGUMENT_TOO_LONG;
+        }
+
+        c = *p_argv_set;
 
         if (c == '\\') {
             ++p_argv_set;
@@ -220,14 +226,8 @@ error_code_t translate_combine_escape(const char* const argv_set, char* const ou
 
         *p_out_combine_escape_set = c;
         ++p_out_combine_escape_set;
-        if (p_out_combine_escape_set - out_combine_escape_set > MAX_ARGUMENT_SIZE - 1) {
-            return ERROR_CODE_ARGUMENT_TOO_LONG;
-        }
 
         ++p_argv_set;
-        if (p_argv_set - argv_set > MAX_ARGUMENT_SIZE - 1) {
-            return ERROR_CODE_ARGUMENT_TOO_LONG;
-        }
     }
 
     *p_out_combine_escape_set = '\0';
@@ -248,6 +248,10 @@ error_code_t translate_range_extension(const char* const combine_escape_set, cha
     translate_flag_t translate_flag = TRANSLATE_FLAG_EMPTY;
 
     while (c != '\0') {
+        if (p_out_range_extension_set - out_range_extension_set > MAX_ARGUMENT_SIZE - 2) {
+            return ERROR_CODE_ARGUMENT_TOO_LONG;
+        }
+
         /* check c */
         if (c == '-' && p_combine_escape_set - combine_escape_set > pre_range_end_index + 1 && *(p_combine_escape_set + 1) != '\0') {
             char range_start_from_c;
@@ -269,12 +273,11 @@ error_code_t translate_range_extension(const char* const combine_escape_set, cha
             c = range_start_from_c + 1;
         }
 
+
         /* setting set */
         *p_out_range_extension_set = c;
         ++p_out_range_extension_set;
-        if (p_out_range_extension_set - out_range_extension_set > MAX_ARGUMENT_SIZE - 2) {
-            return ERROR_CODE_ARGUMENT_TOO_LONG;
-        }
+
 
     change_c:
         /* set next c */
