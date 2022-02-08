@@ -144,7 +144,7 @@ int print_receipt(const char* filename, time_t timestamp)
             const char* p_receipt_message = s_receipt_message;
 
             while (*p_receipt_message != '\0') {
-                if (p_receipt_message - s_receipt_message == MAX_LINE_LENGTH) {
+                if (p_receipt_message != s_receipt_message && ((p_receipt_message - s_receipt_message) % MAX_LINE_LENGTH) == 0) {
                     fprintf(stream, "\n");
                 }
 
