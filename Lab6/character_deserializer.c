@@ -116,17 +116,22 @@ int is_character_v1_get_strcut(FILE* const character_v1_file, character_v1_t* ou
     {
         char* arg_name_token;
         char* arg_value_token;
+        char* next_token_start_point;
         size_t i;
 
         fgets_ret = fgets(line, sizeof(line), character_v1_file);
         if (fgets_ret == NULL) {
             return FALSE;
         }
-
-        arg_name_token = tokenize_or_null(line, DELIMS);
+        next_token_start_point = line;
 
         for (i = 0; i < CHARACTER_V1_ARG_COUNT; ++i) {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_name_token, &next_token_start_point);
+            if (arg_name_token == NULL) {
+                return FALSE;
+            }
+
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (arg_value_token == NULL) {
                 return FALSE;
             }
@@ -204,10 +209,9 @@ int is_character_v1_get_strcut(FILE* const character_v1_file, character_v1_t* ou
                 return FALSE;
                 break;
             }
-
-            arg_name_token = tokenize_or_null(NULL, DELIMS);
         }
 
+        tokenize_or_null(next_token_start_point, DELIMS, &arg_name_token, &next_token_start_point);
         if (arg_name_token != NULL) {
             return FALSE;
         }
@@ -260,24 +264,25 @@ int is_character_v2_get_strcut(FILE* const character_v2_file, character_v2_t* ou
     {
         const char** p_character_v2_arg_names = CHARACTER_V2_ARG_NAMES;
         char* arg_name_token;
+        char* next_token_start_point;
         size_t i;
 
         fgets_ret = fgets(line, sizeof(line), character_v2_file);
         if (fgets_ret == NULL) {
             return FALSE;
         }
-
-        arg_name_token = tokenize_or_null(line, DELIMS);
+        next_token_start_point = line;
 
         for (i = 0; i < ARRAY_LEN(CHARACTER_V2_ARG_NAMES); ++i) {
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_name_token, &next_token_start_point);
             if (strcmp(arg_name_token, *p_character_v2_arg_names) != 0) {
                 return FALSE;
             }
 
-            arg_name_token = tokenize_or_null(NULL, DELIMS);
             ++p_character_v2_arg_names;
         }
 
+        tokenize_or_null(next_token_start_point, DELIMS, &arg_name_token, &next_token_start_point);
         if (arg_name_token != NULL) {
             return FALSE;
         }
@@ -286,14 +291,16 @@ int is_character_v2_get_strcut(FILE* const character_v2_file, character_v2_t* ou
     /* copy arg valeus */
     {
         char* arg_value_token;
+        char* next_token_start_point;
 
         fgets_ret = fgets(line, sizeof(line), character_v2_file);
         if (fgets_ret == NULL) {
             return FALSE;
         }
+        next_token_start_point = line;
 
         {
-            arg_value_token = tokenize_or_null(line, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v2_or_null != NULL) {
                 strncpy(out_character_v2_or_null->name, arg_value_token, MAX_CHARACTER_V2_NAME_LENGTH + 1);
                 out_character_v2_or_null->name[MAX_CHARACTER_V2_NAME_LENGTH] = '\0';
@@ -301,69 +308,69 @@ int is_character_v2_get_strcut(FILE* const character_v2_file, character_v2_t* ou
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v2_or_null != NULL) {
                 out_character_v2_or_null->level = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v2_or_null != NULL) {
                 out_character_v2_or_null->strength = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v2_or_null != NULL) {
                 out_character_v2_or_null->dexterity = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v2_or_null != NULL) {
                 out_character_v2_or_null->intelligence = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v2_or_null != NULL) {
                 out_character_v2_or_null->armour = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v2_or_null != NULL) {
                 out_character_v2_or_null->evasion = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v2_or_null != NULL) {
                 out_character_v2_or_null->magic_resistance = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v2_or_null != NULL) {
                 out_character_v2_or_null->health = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v2_or_null != NULL) {
                 out_character_v2_or_null->mana = str_to_uint(arg_value_token);
             }
         }
 
-        arg_value_token = tokenize_or_null(NULL, DELIMS);
+        tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
         if (arg_value_token != NULL) {
             return FALSE;
         }
@@ -421,23 +428,24 @@ int is_character_v3_get_strcut(FILE* const character_v3_file, character_v3_t* ou
     {
         const char** p_character_v3_arg_names = CHARACTER_V3_ARG_NAMES;
         char* arg_name_token;
+        char* next_token_start_point;
 
         fgets_ret = fgets(line, sizeof(line), character_v3_file);
         if (fgets_ret == NULL) {
             return FALSE;
         }
-
-        arg_name_token = tokenize_or_null(line, DELIMS);
+        next_token_start_point = line;
 
         for (i = 0; i < ARRAY_LEN(CHARACTER_V3_ARG_NAMES); ++i) {
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_name_token, &next_token_start_point);
             if (strcmp(arg_name_token, *p_character_v3_arg_names) != 0) {
                 return FALSE;
             }
 
-            arg_name_token = tokenize_or_null(NULL, DELIMS);
             ++p_character_v3_arg_names;
         }
 
+        tokenize_or_null(next_token_start_point, DELIMS, &arg_name_token, &next_token_start_point);
         if (arg_name_token != NULL) {
             return FALSE;
         }
@@ -446,14 +454,16 @@ int is_character_v3_get_strcut(FILE* const character_v3_file, character_v3_t* ou
     /* copy character arg valeus */
     {
         char* arg_value_token;
+        char* next_token_start_point;
 
         fgets_ret = fgets(line, sizeof(line), character_v3_file);
         if (fgets_ret == NULL) {
             return FALSE;
         }
+        next_token_start_point = line;
 
         {
-            arg_value_token = tokenize_or_null(line, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 strncpy(out_character_v3_or_null->name, arg_value_token, MAX_CHARACTER_V3_NAME_LENGTH + 1);
                 out_character_v3_or_null->name[MAX_CHARACTER_V3_NAME_LENGTH] = '\0';
@@ -461,91 +471,91 @@ int is_character_v3_get_strcut(FILE* const character_v3_file, character_v3_t* ou
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->level = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->health = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->mana = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->strength = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->dexterity = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->intelligence = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->armour = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->evasion = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->elemental_resistance.fire = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->elemental_resistance.cold = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->elemental_resistance.lightning = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (out_character_v3_or_null != NULL) {
                 out_character_v3_or_null->leadership = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             minion_count = str_to_uint(arg_value_token);
             if (minion_count > MAX_CHARACTER_V3_MINION_COUNT) {
                 return FALSE;
@@ -556,7 +566,7 @@ int is_character_v3_get_strcut(FILE* const character_v3_file, character_v3_t* ou
             }
         }
 
-        arg_value_token = tokenize_or_null(NULL, DELIMS);
+        tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
         if (arg_value_token != NULL) {
             return FALSE;
         }
@@ -570,24 +580,25 @@ int is_character_v3_get_strcut(FILE* const character_v3_file, character_v3_t* ou
     {
         const char** p_minion_arg_names = MINION_ARG_NAMES;
         char* arg_name_token;
+        char* next_token_start_point;
         size_t i;
 
         fgets_ret = fgets(line, sizeof(line), character_v3_file);
         if (fgets_ret == NULL) {
             return FALSE;
         }
-
-        arg_name_token = tokenize_or_null(line, DELIMS);
+        next_token_start_point = line;
 
         for (i = 0; i < ARRAY_LEN(MINION_ARG_NAMES); ++i) {
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_name_token, &next_token_start_point);
             if (strcmp(arg_name_token, *p_minion_arg_names) != 0) {
                 return FALSE;
             }
 
-            arg_name_token = tokenize_or_null(NULL, DELIMS);
             ++p_minion_arg_names;
         }
 
+        tokenize_or_null(next_token_start_point, DELIMS, &arg_name_token, &next_token_start_point);
         if (arg_name_token != NULL) {
             return FALSE;
         }
@@ -596,15 +607,17 @@ int is_character_v3_get_strcut(FILE* const character_v3_file, character_v3_t* ou
     /* copy minion arg valeus */
     for (i = 0; i < minion_count; ++i) {
         char* arg_value_token;
+        char* next_token_start_point;
         minion_t* const p_out_minions_or_null = out_character_v3_or_null == NULL ? NULL : out_character_v3_or_null->minions + i;
 
         fgets_ret = fgets(line, sizeof(line), character_v3_file);
         if (fgets_ret == NULL) {
             return FALSE;
         }
+        next_token_start_point = line;
 
         {
-            arg_value_token = tokenize_or_null(line, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (p_out_minions_or_null != NULL) {
                 strncpy(p_out_minions_or_null->name, arg_value_token, MAX_MINION_NAME_LENGTH + 1);
                 p_out_minions_or_null->name[MAX_MINION_NAME_LENGTH] = '\0';
@@ -612,27 +625,27 @@ int is_character_v3_get_strcut(FILE* const character_v3_file, character_v3_t* ou
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (p_out_minions_or_null != NULL) {
                 p_out_minions_or_null->health = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (p_out_minions_or_null != NULL) {
                 p_out_minions_or_null->strength = str_to_uint(arg_value_token);
             }
         }
 
         {
-            arg_value_token = tokenize_or_null(NULL, DELIMS);
+            tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
             if (p_out_minions_or_null != NULL) {
                 p_out_minions_or_null->defence = str_to_uint(arg_value_token);
             }
         }
 
-        arg_value_token = tokenize_or_null(NULL, DELIMS);
+        tokenize_or_null(next_token_start_point, DELIMS, &arg_value_token, &next_token_start_point);
         if (arg_value_token != NULL) {
             return FALSE;
         }

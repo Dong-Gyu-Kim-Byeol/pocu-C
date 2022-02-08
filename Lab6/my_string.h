@@ -16,8 +16,8 @@ void reverse_by_words(char* str);
 size_t index_of_rabin_karp(const char* const str, const char* const word);
 int index_of(const char* str, const char* word);
 
-void tokenize_get_start_and_end_or_null(char* const str_or_null, const char* const delims, char** const out_token_start, char** const out_token_include_end);
-char* tokenize_or_null(char* str_or_null, const char* delims);
-char* reverse_tokenize_or_null(char* str_or_null, const char* delims);
+void tokenize_or_null_get_end(char* const str, const char* const delims, char** const out_token_start, char** const out_token_include_end, char** const out_next_start_point);
+void tokenize_or_null(char* str, const char* delims, char** const out_token_start, char** const out_next_start_point);
+void reverse_tokenize_or_null(char* str, const char* delims, char** const out_token_start, char** const out_next_start_point);
 
 #endif /* MY_STRING_H */

@@ -266,33 +266,33 @@ int index_of(const char* str, const char* word)
     return (int)index_of_rabin_karp(str, word);
 }
 
-void tokenize_get_start_and_end_or_null(
-    char* const str_or_null,
+void tokenize_or_null_get_end(
+    char* const str,
     const char* const delims,
     char** const out_token_start,
-    char** const out_token_include_end)
+    char** const out_token_include_end,
+    char** const out_next_start_point)
 {
-    static char* s_str = NULL;
+    char* p_str = NULL;
 
     assert(out_token_start != NULL);
     assert(out_token_include_end != NULL);
 
-    if (str_or_null != NULL) {
-        s_str = str_or_null;
-    }
+    p_str = str;
 
-    if (s_str == NULL || *s_str == '\0') {
+    if (p_str == NULL || *p_str == '\0') {
         *out_token_start = NULL;
         *out_token_include_end = NULL;
+        *out_next_start_point = NULL;
         return;
     }
 
     /* skip */
-    while (*s_str != '\0') {
+    while (*p_str != '\0') {
         const char* p_delims = delims;
 
         while (*p_delims != '\0') {
-            if (*s_str == *p_delims) {
+            if (*p_str == *p_delims) {
                 break;
             }
 
@@ -303,65 +303,64 @@ void tokenize_get_start_and_end_or_null(
             break;
         }
 
-        ++s_str;
+        ++p_str;
     }
 
     {
-        char* const s_str_first = s_str;
-        ++s_str;
+        char* const p_str_first = p_str;
+        ++p_str;
 
-        while (*s_str != '\0') {
+        while (*p_str != '\0') {
             const char* p_delims = delims;
 
             while (*p_delims != '\0') {
-                if (*s_str == *p_delims) {
-                    *s_str = '\0';
-                    ++s_str;
+                if (*p_str == *p_delims) {
+                    *p_str = '\0';
+                    ++p_str;
 
-                    *out_token_start = s_str_first;
-                    *out_token_include_end = s_str - 2;
+                    *out_token_start = p_str_first;
+                    *out_token_include_end = p_str - 2;
+                    *out_next_start_point = p_str;
                     return;
                 }
 
                 ++p_delims;
             }
 
-            ++s_str;
+            ++p_str;
         }
 
-        assert(*s_str == '\0');
-        *out_token_start = s_str_first;
-        *out_token_include_end = s_str - 1;
-        s_str = NULL;
+        assert(*p_str == '\0');
+        *out_token_start = p_str_first;
+        *out_token_include_end = p_str - 1;
+        *out_next_start_point = NULL;
         return;
     }
 }
 
-char* tokenize_or_null(char* str_or_null, const char* delims)
+void tokenize_or_null(char* str, const char* delims, char** const out_token_start, char** const out_next_start_point)
 {
-    char* p_token_start;
-    char* p_token_include_end;
-
-    assert(delims != NULL);
-
-    tokenize_get_start_and_end_or_null(str_or_null, delims, &p_token_start, &p_token_include_end);
-
-    return p_token_start;
-}
-
-char* reverse_tokenize_or_null(char* str_or_null, const char* delims)
-{
-    char* p_token_start;
     char* p_token_end;
 
     assert(delims != NULL);
 
-    tokenize_get_start_and_end_or_null(str_or_null, delims, &p_token_start, &p_token_end);
+    tokenize_or_null_get_end(str, delims, out_token_start, &p_token_end, out_next_start_point);
 
-    if (p_token_start != NULL) {
+    return;
+}
+
+void reverse_tokenize_or_null(char* str, const char* delims, char** const out_token_start, char** const out_next_start_point)
+{
+    char* p_token_end;
+
+    assert(delims != NULL);
+
+    tokenize_or_null_get_end(str, delims, out_token_start, &p_token_end, out_next_start_point);
+
+    if (*out_token_start != NULL) {
         assert(p_token_end != NULL);
-        reverse_start_end(p_token_start, p_token_end);
+        reverse_start_end(*out_token_start, p_token_end);
     }
 
-    return p_token_start;
+    return;
 }
