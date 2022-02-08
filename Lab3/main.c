@@ -51,6 +51,7 @@ int main(void)
 
     test_etc();
 
+    printf("main end\n");
     return 0;
 }
 

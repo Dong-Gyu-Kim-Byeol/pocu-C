@@ -17,11 +17,14 @@
 
 int is_overlap(const char* const arr1, const size_t length1, const char* const arr2, const size_t length2)
 {
+    assert((TRUE == TRUE) == TRUE);
+    assert((TRUE != TRUE) == FALSE);
+
     if (arr1 <= arr2) {
-        return arr1 + length1 > arr2 ? TRUE : FALSE;
+        return arr1 + length1 > arr2;
     }
 
-    return arr2 + length2 > arr1 ? TRUE : FALSE;
+    return arr2 + length2 > arr1;
 }
 
 const char* get_longest_safe_zone_or_null(
