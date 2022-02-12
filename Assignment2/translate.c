@@ -9,24 +9,24 @@ static error_code_t translate_combine_escape(const char* const argv_set, char* c
 static error_code_t translate_range_extension(const char* const combine_escape_set, char* const out_range_extension_set);
 
 
-#define MAX_SET_SIZE (255)
-#define MAX_ARGUMENT_SIZE (512)
+#define TRANSLATE_SET_SIZE (255)
+#define ARGUMENT_SET_SIZE (512)
 #define LINE_SIZE (1024)
 
 
 int translate(int argc, const char** argv)
 {
-    char translate_set[MAX_SET_SIZE] = { 0, };
+    char translate_set[TRANSLATE_SET_SIZE] = { 0, };
 
-    char from_set[MAX_ARGUMENT_SIZE];
-    char to_set[MAX_ARGUMENT_SIZE];
+    char from_set[ARGUMENT_SET_SIZE];
+    char to_set[ARGUMENT_SET_SIZE];
 
     translate_flag_t translate_flag = TRANSLATE_FLAG_EMPTY;
 
     /* setting from_set, to_set */
     {
-        char tmep_combine_escape_from_set[MAX_ARGUMENT_SIZE];
-        char tmep_combine_escape_to_set[MAX_ARGUMENT_SIZE];
+        char tmep_combine_escape_from_set[ARGUMENT_SET_SIZE];
+        char tmep_combine_escape_to_set[ARGUMENT_SET_SIZE];
 
         const char* argv_from_set = NULL;
         const char* argv_to_set = NULL;
@@ -43,18 +43,18 @@ int translate(int argc, const char** argv)
             }
 
             if (argc == 4) {
-                const char* p_flags = argv[1];
+                const char* p_arg_options = argv[1];
 
                 argv_from_set = argv[2];
                 argv_to_set = argv[3];
 
-                if (p_flags[0] != '-') {
+                if (p_arg_options[0] != '-') {
                     return ERROR_CODE_INVALID_FLAG;
                 }
-                ++p_flags;
+                ++p_arg_options;
 
-                while (*p_flags != '\0') {
-                    switch (*p_flags) {
+                while (*p_arg_options != '\0') {
+                    switch (*p_arg_options) {
                     case 'i':
                         if (is_set_translate_flag(translate_flag, TRANSLATE_FLAG_I_IGNORE_CASE) == TRUE) {
                             return ERROR_CODE_INVALID_FLAG;
@@ -66,7 +66,7 @@ int translate(int argc, const char** argv)
                         return ERROR_CODE_INVALID_FLAG;
                     }
 
-                    ++p_flags;
+                    ++p_arg_options;
                 }
             }
         }
@@ -178,7 +178,7 @@ error_code_t translate_combine_escape(const char* const argv_set, char* const ou
     while (*p_argv_set != '\0') {
         char c;
 
-        if (p_argv_set - argv_set > MAX_ARGUMENT_SIZE - 2) {
+        if (p_argv_set - argv_set > ARGUMENT_SET_SIZE - 2) {
             return ERROR_CODE_ARGUMENT_TOO_LONG;
         }
 
@@ -248,7 +248,7 @@ error_code_t translate_range_extension(const char* const combine_escape_set, cha
     translate_flag_t translate_flag = TRANSLATE_FLAG_EMPTY;
 
     while (c != '\0') {
-        if (p_out_range_extension_set - out_range_extension_set > MAX_ARGUMENT_SIZE - 2) {
+        if (p_out_range_extension_set - out_range_extension_set > ARGUMENT_SET_SIZE - 2) {
             return ERROR_CODE_ARGUMENT_TOO_LONG;
         }
 
