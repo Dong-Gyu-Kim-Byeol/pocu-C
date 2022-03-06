@@ -51,7 +51,8 @@ int main(void)
         char** tokens = tokenize_malloc(str, "");
         char** tt = tokens;
 
-        assert(strcmp(*tt++, str) == 0);
+        assert(strcmp(*tt, str) == 0);
+        assert(*tt++ != str);
         assert(*tt == NULL);
 
         tt = tokens;
