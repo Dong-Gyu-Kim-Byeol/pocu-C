@@ -48,8 +48,6 @@ char** tokenize_malloc(const char* str, const char* delims)
         /* make token */
         {
             const char* const p_str_first = p_str;
-            ++p_str;
-
             while (*p_str_first != '\0') {
                 const char* p_delims = delims;
 
