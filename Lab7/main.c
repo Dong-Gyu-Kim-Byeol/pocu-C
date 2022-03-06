@@ -46,6 +46,22 @@ int main(void)
         free(tokens);
     }
 
+    {
+        const char* str = "I like cookies. Do you like cookies? Cookies are good!";
+        char** tokens = tokenize_malloc(str, "");
+        char** tt = tokens;
+
+        assert(strcmp(*tt++, str) == 0);
+        assert(*tt == NULL);
+
+        tt = tokens;
+        while (*tt != NULL) {
+            free(*tt++);
+        }
+
+        free(tokens);
+    }
+
     printf("end main\n");
     return 0;
 }

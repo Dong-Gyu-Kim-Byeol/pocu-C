@@ -23,6 +23,19 @@ char** tokenize_malloc(const char* str, const char* delims)
     assert(str != NULL);
     assert(delims != NULL);
 
+    if (*delims == '\0') {
+        const size_t size = strlen(str) + 1;
+        char* pa_token = malloc(size);
+        memcpy(pa_token, str, size);
+
+        assert(tokens_capacity >= 2);
+        *tokens = pa_token;
+        tokens++;
+        *tokens = NULL;
+
+        return pa_tokens;
+    }
+
     p_str = str;
     while (TRUE) {
         /* skip delims */
@@ -66,7 +79,7 @@ char** tokenize_malloc(const char* str, const char* delims)
 
                         if ((size_t)(tokens - pa_tokens) == tokens_capacity - 1) {
                             char** pa_tmp = NULL;
-                            size_t size = tokens - pa_tokens;
+                            const size_t size = tokens - pa_tokens;
                             tokens_capacity *= TOKENS_CAPACITY_INCREASE;
 
                             pa_tmp = malloc(sizeof(pa_token) * tokens_capacity);
