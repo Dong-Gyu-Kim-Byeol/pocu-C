@@ -266,7 +266,7 @@ int index_of(const char* str, const char* word)
     return (int)index_of_rabin_karp(str, word);
 }
 
-void tokenize_or_null_get_end(
+void tokenize_get_end_or_null(
     char* const str,
     const char* const delims,
     char** const out_token_start,
@@ -344,7 +344,7 @@ void tokenize_or_null(char* str, const char* delims, char** const out_token_star
 
     assert(delims != NULL);
 
-    tokenize_or_null_get_end(str, delims, out_token_start, &p_token_end, out_next_start_point);
+    tokenize_get_end_or_null(str, delims, out_token_start, &p_token_end, out_next_start_point);
 
     return;
 }
@@ -355,7 +355,7 @@ void reverse_tokenize_or_null(char* str, const char* delims, char** const out_to
 
     assert(delims != NULL);
 
-    tokenize_or_null_get_end(str, delims, out_token_start, &p_token_end, out_next_start_point);
+    tokenize_get_end_or_null(str, delims, out_token_start, &p_token_end, out_next_start_point);
 
     if (*out_token_start != NULL) {
         assert(p_token_end != NULL);
