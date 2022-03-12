@@ -158,6 +158,10 @@ int print_as_tree(const char* filename)
     size_t pi;
     FILE* file = NULL;
 
+    if (s_paragraph_total_count == 0) {
+        return FALSE;
+    }
+
     file = fopen(filename, "w");
     if (file == NULL) {
         return FALSE;
