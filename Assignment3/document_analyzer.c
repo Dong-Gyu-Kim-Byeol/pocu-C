@@ -6,7 +6,10 @@
 #include <memory.h>
 
 #include "document_analyzer.h"
-
+/* my func */
+static void make_words();
+static void make_sentences();
+static void make_paragraph();
 
 #define INIT_ARRAY_CAPACITY (8)
 #define INCREASE_ARRAY_SIZE (2)
@@ -154,7 +157,7 @@ int print_as_tree(const char* filename)
 {
     size_t pi;
     FILE* file = NULL;
-    if (s_pa_str = NULL) {
+    if (s_pa_str == NULL) {
         return FALSE;
     }
 
@@ -203,7 +206,7 @@ char* get_string_at_file_malloc_or_null(const char* file_path, size_t* out_strle
 {
     char line[LINE_SIZE];
 
-    char* pa_str = NULL;
+    char* out_pa_str = NULL;
     size_t str_capacity = LINE_SIZE;
     size_t strlen = 0;
 
@@ -214,26 +217,26 @@ char* get_string_at_file_malloc_or_null(const char* file_path, size_t* out_strle
         return NULL;
     }
 
-    pa_str = malloc(sizeof(*pa_str) * LINE_SIZE);
-    p_str = pa_str;
+    out_pa_str = malloc(sizeof(*out_pa_str) * LINE_SIZE);
+    p_str = out_pa_str;
 
     while (fgets(line, LINE_SIZE, file) != NULL) {
         char* p_line = line;
         while (*p_line != '\0') {
-            const size_t next_i = p_str - pa_str;
+            const size_t next_i = p_str - out_pa_str;
             if (next_i >= str_capacity - 1) {
                 char* pa_tmp = NULL;
                 const size_t new_capacity = str_capacity * INCREASE_ARRAY_SIZE;
 
-                pa_tmp = malloc(sizeof(*pa_str) * new_capacity);
-                memcpy(pa_tmp, pa_str, str_capacity);
+                pa_tmp = malloc(sizeof(*out_pa_str) * new_capacity);
+                memcpy(pa_tmp, out_pa_str, str_capacity);
 
-                free(pa_str);
-                pa_str = NULL;
+                free(out_pa_str);
+                out_pa_str = NULL;
 
-                pa_str = pa_tmp;
+                out_pa_str = pa_tmp;
                 str_capacity = new_capacity;
-                p_str = pa_str + next_i;
+                p_str = out_pa_str + next_i;
             }
 
             *p_str = *p_line;
@@ -250,7 +253,7 @@ char* get_string_at_file_malloc_or_null(const char* file_path, size_t* out_strle
 
     *p_str = '\0';
     *out_strlen = strlen;
-    return pa_str;
+    return out_pa_str;
 }
 
 void make_words()
