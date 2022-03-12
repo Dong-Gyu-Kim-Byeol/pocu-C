@@ -7,16 +7,12 @@
 
 #include "document_analyzer.h"
 
+
 #define INIT_ARRAY_CAPACITY (8)
 #define INCREASE_ARRAY_SIZE (2)
 
 #define LINE_SIZE (2)
 
-
-/*typedef char**** document_t;
-typedef char*** paragraph_t;
-typedef char** sentence_t;
-typedef char* word_t;*/
 
 static char* s_pa_str = NULL;
 static size_t s_strlen = 0;
@@ -33,7 +29,7 @@ static char**** s_pa_paragraphs = NULL;
 static size_t s_paragraph_capacity = 0;
 static size_t s_paragraph_total_count = 0;
 
-/* static document_t s_pa_document = NULL; */
+/* static char***** s_pa_documents = NULL; */
 
 int load_document(const char* document)
 {
