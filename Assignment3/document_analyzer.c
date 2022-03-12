@@ -157,8 +157,12 @@ size_t get_sentence_word_count(const char** sentence)
 int print_as_tree(const char* filename)
 {
     size_t pi;
-    FILE* file = fopen(filename, "w");
+    FILE* file = NULL;
+    if (s_pa_str = NULL) {
+        return FALSE;
+    }
 
+    file = fopen(filename, "w");
     if (file == NULL) {
         return FALSE;
     }
@@ -171,12 +175,12 @@ int print_as_tree(const char* filename)
             fprintf(file, "\n");
         }
 
-        fprintf(file, "Paragraph %llu:", pi);
+        fprintf(file, "Paragraph %lu:", pi);
 
         while (*p_sentences != NULL) {
             const char** p_words = *p_sentences;
 
-            fprintf(file, "\n    Sentence %llu:", si);
+            fprintf(file, "\n    Sentence %lu:", si);
 
             while (*p_words != NULL) {
                 fprintf(file, "\n        %s", *p_words);
@@ -203,16 +207,19 @@ char* get_string_at_file_malloc_or_null(const char* file_path, size_t* out_strle
 {
     char line[LINE_SIZE];
 
-    char* pa_str = malloc(sizeof(*pa_str) * LINE_SIZE);
+    char* pa_str = NULL;
     size_t str_capacity = LINE_SIZE;
     size_t strlen = 0;
 
-    char* p_str = pa_str;
+    char* p_str = NULL;
 
     FILE* file = fopen(file_path, "r");
     if (file == NULL) {
         return NULL;
     }
+
+    pa_str = malloc(sizeof(*pa_str) * LINE_SIZE);
+    p_str = pa_str;
 
     while (fgets(line, LINE_SIZE, file) != NULL) {
         char* p_line = line;
@@ -285,9 +292,8 @@ void make_words()
             /* add word */
             if (is_add_new_word) {
                 if (s_pa_words == NULL) {
-                    const size_t new_capacity = INIT_ARRAY_CAPACITY;
-                    s_pa_words = malloc(sizeof(*s_pa_words) * new_capacity);
-                    s_word_capacity = new_capacity;
+                    s_pa_words = malloc(sizeof(*s_pa_words) * INIT_ARRAY_CAPACITY);
+                    s_word_capacity = INIT_ARRAY_CAPACITY;
                     s_word_total_count = 0;
 
                     p_words = s_pa_words;
@@ -362,9 +368,8 @@ void make_sentences()
             /* add sentence */
             if (is_add_new_sentence) {
                 if (s_pa_sentences == NULL) {
-                    const size_t new_capacity = INIT_ARRAY_CAPACITY;
-                    s_pa_sentences = malloc(sizeof(*s_pa_sentences) * new_capacity);
-                    s_sentence_capacity = new_capacity;
+                    s_pa_sentences = malloc(sizeof(*s_pa_sentences) * INIT_ARRAY_CAPACITY);
+                    s_sentence_capacity = INIT_ARRAY_CAPACITY;
                     s_sentence_total_count = 0;
 
                     p_sentences = s_pa_sentences;
@@ -434,9 +439,8 @@ void make_paragraph()
             /* add paragraph */
             if (is_add_new_paragraph) {
                 if (s_pa_paragraphs == NULL) {
-                    const size_t new_capacity = INIT_ARRAY_CAPACITY;
-                    s_pa_paragraphs = malloc(sizeof(*s_pa_paragraphs) * new_capacity);
-                    s_paragraph_capacity = new_capacity;
+                    s_pa_paragraphs = malloc(sizeof(*s_pa_paragraphs) * INIT_ARRAY_CAPACITY);
+                    s_paragraph_capacity = INIT_ARRAY_CAPACITY;
                     s_paragraph_total_count = 0;
 
                     p_paragraphs = s_pa_paragraphs;

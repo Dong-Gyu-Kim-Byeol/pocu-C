@@ -28,7 +28,7 @@ size_t get_sentence_word_count(const char** sentence);
 int print_as_tree(const char* filename);
 
 /* my func */
-char* get_string_at_file_malloc_or_null(const char* file_path, size_t *out_strlen);
+char* get_string_at_file_malloc_or_null(const char* file_path, size_t* out_strlen);
 
 void make_words();
 void make_sentences();
