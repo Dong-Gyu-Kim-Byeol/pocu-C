@@ -157,9 +157,6 @@ int print_as_tree(const char* filename)
 {
     size_t pi;
     FILE* file = NULL;
-    if (s_pa_str == NULL) {
-        return FALSE;
-    }
 
     file = fopen(filename, "w");
     if (file == NULL) {
@@ -174,12 +171,12 @@ int print_as_tree(const char* filename)
             fprintf(file, "\n");
         }
 
-        fprintf(file, "Paragraph %lu:", pi);
+        fprintf(file, "Paragraph %u:", pi);
 
         while (*p_sentences != NULL) {
             const char** p_words = *p_sentences;
 
-            fprintf(file, "\n    Sentence %lu:", si);
+            fprintf(file, "\n    Sentence %u:", si);
 
             while (*p_words != NULL) {
                 fprintf(file, "\n        %s", *p_words);
