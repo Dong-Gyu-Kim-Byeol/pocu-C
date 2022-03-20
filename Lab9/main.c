@@ -51,7 +51,7 @@ int main(void)
         assert(arr[i] == 0);
     }
 
-    SET(arr, 5, 5, 100);
+    SET(arr + 0, 5, 5, 100);
 
     for (i = 0; i < 5; i++) {
         assert(arr[i] == 0);
