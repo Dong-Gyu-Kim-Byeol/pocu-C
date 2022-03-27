@@ -7,15 +7,15 @@
 #define MAX_TASK_STR_LENGTH (128)
 
 typedef struct task {
-	int32_t priority;
-	struct task* next;
-	char str[MAX_TASK_STR_LENGTH];
+    int32_t priority;
+    struct task* next;
+    char str[MAX_TASK_STR_LENGTH];
 } task_t;
 
 typedef struct todo_list {
-	size_t capacity;
-	size_t count;
-	task_t* list;
+    size_t capacity;
+    size_t count;
+    task_t* list;
 } todo_list_t;
 
 todo_list_t init_todo_list(size_t max_size);
