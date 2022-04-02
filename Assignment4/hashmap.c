@@ -39,13 +39,14 @@ int add_key(hashmap_t* hashmap, const char* key, const int value)
 
     /* make */
     {
-        const size_t key_len = strlen(key);
+        const size_t key_len = strlen(key) + 1;
 
         pa_new_node = malloc(sizeof(node_t));
         memset(pa_new_node, 0, sizeof(*pa_new_node));
 
         pa_new_node->key = malloc(key_len);
         strcpy(pa_new_node->key, key);
+        pa_new_node->key[key_len - 1] = '\0';
 
         pa_new_node->value = value;
     }
@@ -150,6 +151,7 @@ void destroy_linked_list(node_t** phead)
     node_t* head = *phead;
     while (head != NULL) {
         node_t* next = head->next;
+        head->next = NULL;
 
         free(head->key);
         head->key = NULL;
