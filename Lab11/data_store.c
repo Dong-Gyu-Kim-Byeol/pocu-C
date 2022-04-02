@@ -24,7 +24,7 @@ static void init_log_file(void)
 #else
     const char LOG_FILE_NAME[] = "log.txt";
 #endif
-    
+
 
     if (NULL != s_log_file) {
         return;
