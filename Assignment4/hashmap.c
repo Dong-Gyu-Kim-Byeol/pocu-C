@@ -93,6 +93,7 @@ int remove_key(hashmap_t* hashmap, const char* key)
         node_t* node = *pp_node;
         if (strcmp(node->key, key) == 0) {
             *pp_node = node->next;
+            node->next = NULL;
 
             free(node->key);
             node->key = NULL;
@@ -120,6 +121,9 @@ void destroy(hashmap_t* hashmap)
 
     free(hashmap->plist);
     memset(hashmap, 0, sizeof(*hashmap));
+
+    free(hashmap);
+    hashmap = NULL;
 }
 
 
