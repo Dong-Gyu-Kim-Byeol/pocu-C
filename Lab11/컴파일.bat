@@ -1,3 +1,3 @@
 del a.exe
-clang -std=c89 -W -Wall -pedantic-errors *.c
+clang -std=c99 -W -Wall -pedantic-errors *.c
 pause
