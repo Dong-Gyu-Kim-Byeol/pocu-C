@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,16 +8,18 @@
 
 #include "hashmap.h"
 static node_t* get_node_or_null(const hashmap_t* hashmap, const char* key);
-
+static void destroy_linked_list(node_t** phead);
 
 hashmap_t* init_hashmap_malloc(size_t length, size_t(*p_hash_func)(const char* key))
 {
+    const plist_size = sizeof(node_t*) * (length + 1);
+
     hashmap_t* pa_hashmap = malloc(sizeof(hashmap_t));
     memset(pa_hashmap, 0, sizeof(*pa_hashmap));
 
     pa_hashmap->length = length;
-
-    const plist_size = sizeof(node_t*) * (length + 1);
+    pa_hashmap->hash_func = p_hash_func;
+        
     pa_hashmap->plist = malloc(plist_size);
     memset(pa_hashmap->plist, 0, plist_size);
 
@@ -24,38 +28,45 @@ hashmap_t* init_hashmap_malloc(size_t length, size_t(*p_hash_func)(const char* k
 
 int add_key(hashmap_t* hashmap, const char* key, const int value)
 {
+    node_t* pa_new_node;
+
     if (HASHMAP_NO_VALUE == value) {
         return FALSE;
     }
-    if (NULL == get_node_or_null(hashmap, key)) {
+    if (NULL != get_node_or_null(hashmap, key)) {
         return FALSE;
     }
 
-    // make
-    node_t* pa_new_node = malloc(sizeof(node_t));
-    memset(pa_new_node, 0, sizeof(*pa_new_node));
+    /* make */
+    {
+        const size_t key_len = strlen(key);
 
-    const size_t key_len = strlen(key);
-    pa_new_node->key = malloc(key_len);
-    strcpy(pa_new_node->key, key);
+        pa_new_node = malloc(sizeof(node_t));
+        memset(pa_new_node, 0, sizeof(*pa_new_node));
+        
+        pa_new_node->key = malloc(key_len);
+        strcpy(pa_new_node->key, key);
 
-    pa_new_node->value = value;
+        pa_new_node->value = value;
+    }
 
-    // add
-    const size_t hash = hashmap->hash_func(key);
-    const size_t index = hash % hashmap->length;
+    /* add */
+    {
+        const size_t hash = hashmap->hash_func(key);
+        const size_t index = hash % hashmap->length;
 
-    node_t** phead = &hashmap->plist[index];
-    pa_new_node->next = *phead;
-    *phead = pa_new_node;
-    return TRUE;
+        node_t** phead = &hashmap->plist[index];
+        pa_new_node->next = *phead;
+        *phead = pa_new_node;
+        return TRUE;
+    }
 }
 
 int get_value(const hashmap_t* hashmap, const char* key)
 {
     node_t* node = get_node_or_null(hashmap, key);
     if (NULL == node) {
-        return HASHMAP_NO_VALUE
+        return HASHMAP_NO_VALUE;
     }
 
     return node->value;
@@ -101,7 +112,7 @@ void destroy(hashmap_t* hashmap)
     node_t** p_plist = hashmap->plist;
     while (NULL != *p_plist) {
         node_t** phead = p_plist;
-        destroy(phead);
+        destroy_linked_list(phead);
         assert(NULL == *phead);
 
         ++p_plist;
@@ -112,8 +123,8 @@ void destroy(hashmap_t* hashmap)
 }
 
 
-//
-static node_t* get_node_or_null(const hashmap_t* hashmap, const char* key)
+
+node_t* get_node_or_null(const hashmap_t* hashmap, const char* key)
 {
     const size_t hash = hashmap->hash_func(key);
     const size_t index = hash % hashmap->length;
@@ -130,7 +141,7 @@ static node_t* get_node_or_null(const hashmap_t* hashmap, const char* key)
     return NULL;
 }
 
-void destroy(node_t** phead)
+void destroy_linked_list(node_t** phead)
 {
     node_t* head = *phead;
     while (head != NULL) {
