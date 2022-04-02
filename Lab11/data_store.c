@@ -17,7 +17,7 @@ static void log_update_password(const user_t* const pre_update_user, const char*
 
 static void init_log_file(void)
 {
-    const char LOG_FILE_MODE[] = "wb";
+    const char LOG_FILE_MODE[] = "a";
     const char LOG_FILE_NAME[] = "log.txt";
 
     if (NULL != s_log_file) {
