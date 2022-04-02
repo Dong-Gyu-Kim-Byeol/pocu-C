@@ -18,13 +18,13 @@ static void log_update_password(const user_t* const pre_update_user, const char*
 static void init_log_file(void)
 {
     const char LOG_FILE_MODE[] = "wb";
+    const char LOG_FILE_NAME[] = "log.txt";
 
 #ifdef RELEASE
-    const char LOG_FILE_NAME[] = "log_release.txt";
+    //const char LOG_FILE_NAME[] = "log_release.txt";
 #else
-    const char LOG_FILE_NAME[] = "log.txt";
+    //const char LOG_FILE_NAME[] = "log.txt";
 #endif
-
 
     if (NULL != s_log_file) {
         return;
