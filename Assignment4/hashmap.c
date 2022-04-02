@@ -10,7 +10,7 @@
 static node_t* get_node_or_null(const hashmap_t* hashmap, const char* key);
 static void destroy_linked_list(node_t** phead);
 
-hashmap_t* init_hashmap_malloc(size_t length, size_t(*p_hash_func)(const char* key))
+hashmap_t* init_hashmap_malloc(size_t length, size_t (*p_hash_func)(const char* key))
 {
     const plist_size = sizeof(node_t*) * (length + 1);
 
