@@ -17,7 +17,7 @@ static void log_update_password(const user_t* const pre_update_user, const char*
 
 static void init_log_file(void)
 {
-    const char LOG_FILE_MODE[] = "wb";
+    const char LOG_FILE_MODE[] = "w";
     const char LOG_FILE_NAME[] = "log.txt";
 
 #ifdef RELEASE
@@ -84,11 +84,7 @@ void get_blank_str(char* const out_str, const char* const plain_str, const size_
 
 static void log_update_email(const user_t* const pre_update_user, const char* const new_email)
 {
-    if (NULL == s_log_file) {
-        init_log_file();
-    } else {
-        fprintf(s_log_file, "\n");
-    }    
+    init_log_file();
 
     char old_str[sizeof(pre_update_user->email)];
     get_blank_str(old_str, pre_update_user->email, sizeof(old_str));
@@ -96,16 +92,12 @@ static void log_update_email(const user_t* const pre_update_user, const char* co
     char new_str[sizeof(pre_update_user->email)];
     get_blank_str(new_str, new_email, sizeof(new_str));
 
-    fprintf(s_log_file, "TRACE: User %zu updated email from \"%s\" to \"%s\"", pre_update_user->id, old_str, new_str);
+    fprintf(s_log_file, "TRACE: User %zu updated email from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
 }
 
 static void log_update_password(const user_t* const pre_update_user, const char* const new_password)
 {
-    if (NULL == s_log_file) {
-        init_log_file();
-    } else {
-        fprintf(s_log_file, "\n");
-    }
+    init_log_file();
 
     char old_str[sizeof(pre_update_user->password)];
     get_blank_str(old_str, pre_update_user->password, sizeof(old_str));
@@ -113,7 +105,7 @@ static void log_update_password(const user_t* const pre_update_user, const char*
     char new_str[sizeof(pre_update_user->email)];
     get_blank_str(new_str, new_password, sizeof(new_str));
 
-    fprintf(s_log_file, "TRACE: User %zu updated password from \"%s\" to \"%s\"", pre_update_user->id, old_str, new_str);
+    fprintf(s_log_file, "TRACE: User %zu updated password from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
 }
 
 user_t* get_user_by_id_or_null(user_t** const users_or_null, const size_t id)
