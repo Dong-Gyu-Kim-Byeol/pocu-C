@@ -19,7 +19,7 @@ hashmap_t* init_hashmap_malloc(size_t length, size_t(*p_hash_func)(const char* k
 
     pa_hashmap->length = length;
     pa_hashmap->hash_func = p_hash_func;
-        
+
     pa_hashmap->plist = malloc(plist_size);
     memset(pa_hashmap->plist, 0, plist_size);
 
@@ -43,7 +43,7 @@ int add_key(hashmap_t* hashmap, const char* key, const int value)
 
         pa_new_node = malloc(sizeof(node_t));
         memset(pa_new_node, 0, sizeof(*pa_new_node));
-        
+
         pa_new_node->key = malloc(key_len);
         strcpy(pa_new_node->key, key);
 
@@ -93,7 +93,7 @@ int remove_key(hashmap_t* hashmap, const char* key)
         node_t* node = *pp_node;
         if (strcmp(node->key, key) == 0) {
             *pp_node = node->next;
-            
+
             free(node->key);
             node->key = NULL;
             free(node);
