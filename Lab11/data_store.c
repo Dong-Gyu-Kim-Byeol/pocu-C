@@ -9,7 +9,10 @@
 
 static FILE* open_log_file(void);
 static void close_log_file(FILE* log_file);
-static void get_blank_str(char* const out_str, const char* const plain_str, const size_t out_size);
+
+void get_hided_email(char* const out_hided_email, const char* const plain_email, const size_t out_size);
+void get_hided_password(char* const out_hided_password, const char* const plain_password, const size_t out_size);
+
 static void log_update_email(const user_t* const pre_update_user, const char* const new_email);
 static void log_update_password(const user_t* const pre_update_user, const char* const new_password);
 
@@ -31,50 +34,98 @@ static void close_log_file(FILE* log_file)
     log_file = NULL;
 }
 
-void get_blank_str(char* const out_str, const char* const plain_str, const size_t out_size)
+void get_hided_email(char* const out_hided_email, const char* const plain_email, const size_t out_size)
 {
 #ifdef RELEASE
 
-    if ('\0' == *plain_str) {
-        out_str[0] = '\0';
+    if ('\0' == *plain_email) {
+        out_hided_email[0] = '\0';
         return;
     }
 
-    char* p_out_str = out_str;
-    const char* p_plain_str = plain_str;
+    char* p_out_str = out_hided_email;
+    const char* p_plain_str = plain_email;
 
     p_out_str[0] = p_plain_str[0];
     ++p_out_str;
     ++p_plain_str;
 
-    while ('@' != *p_plain_str && '\0' != *p_plain_str) {
+    while ('@' != *p_plain_str) {
+        if ((size_t)(p_out_str - out_hided_email) > out_size - 1) {
+            break;
+        }
+
         *p_out_str = '*';
 
         ++p_out_str;
         ++p_plain_str;
     }
+    *(p_out_str - 1) = *(p_plain_str - 1);
 
-    if ('@' == *p_plain_str || '\0' == *p_plain_str) {
-        *(p_out_str - 1) = *(p_plain_str - 1);
-    }
-    if ('\0' == *p_plain_str) {
-        *(p_out_str) = '\0';
-    }
-
-    if (1 == p_plain_str - plain_str) {
-        out_str[0] = '*';
-    } else if (2 == p_plain_str - plain_str) {
-        out_str[0] = plain_str[0];
-        out_str[1] = '*';
+    if (1 == p_plain_str - plain_email) {
+        out_hided_email[0] = '*';
+    } else if (2 == p_plain_str - plain_email) {
+        out_hided_email[0] = plain_email[0];
+        out_hided_email[1] = '*';
     }
     
-    strncpy(p_out_str, p_plain_str, out_size - (p_out_str - out_str));
-    out_str[out_size - 1] = '\0';
+    strncpy(p_out_str, p_plain_str, out_size - (p_out_str - out_hided_email));
+    out_hided_email[out_size - 1] = '\0';
     return;
+
 #else
 
-    strncpy(out_str, plain_str, out_size);
-    out_str[out_size - 1] = '\0';
+    strncpy(out_hided_email, plain_email, out_size);
+    out_hided_email[out_size - 1] = '\0';
+    return;
+
+#endif
+}
+
+void get_hided_password(char* const out_hided_password, const char* const plain_password, const size_t out_size)
+{
+#ifdef RELEASE
+
+    if ('\0' == *plain_password) {
+        out_hided_password[0] = '\0';
+        return;
+    }
+
+    char* p_out_str = out_hided_password;
+    const char* p_plain_str = plain_password;
+
+    p_out_str[0] = p_plain_str[0];
+    ++p_out_str;
+    ++p_plain_str;
+
+    while ('\0' != *p_plain_str) {
+        if ((size_t)(p_out_str - out_hided_password) > out_size - 1) {
+            break;
+        }
+
+        *p_out_str = '*';
+
+        ++p_out_str;
+        ++p_plain_str;
+    }
+    *(p_out_str - 1) = *(p_plain_str - 1);
+    *(p_out_str) = '\0';
+
+    if (1 == p_plain_str - plain_password) {
+        out_hided_password[0] = '*';
+    } else if (2 == p_plain_str - plain_password) {
+        out_hided_password[0] = plain_password[0];
+        out_hided_password[1] = '*';
+    }
+
+    strncpy(p_out_str, p_plain_str, out_size - (p_out_str - out_hided_password));
+    out_hided_password[out_size - 1] = '\0';
+    return;
+
+#else
+
+    strncpy(out_hided_password, plain_password, out_size);
+    out_hided_password[out_size - 1] = '\0';
     return;
 
 #endif
@@ -85,10 +136,10 @@ static void log_update_email(const user_t* const pre_update_user, const char* co
     FILE* log_file = open_log_file();
 
     char old_str[sizeof(pre_update_user->email)];
-    get_blank_str(old_str, pre_update_user->email, sizeof(old_str));
+    get_hided_email(old_str, pre_update_user->email, sizeof(old_str));
 
     char new_str[sizeof(pre_update_user->email)];
-    get_blank_str(new_str, new_email, sizeof(new_str));
+    get_hided_email(new_str, new_email, sizeof(new_str));
 
     fprintf(log_file, "TRACE: User %u updated email from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
 
@@ -101,10 +152,10 @@ static void log_update_password(const user_t* const pre_update_user, const char*
     FILE* log_file = open_log_file();
 
     char old_str[sizeof(pre_update_user->password)];
-    get_blank_str(old_str, pre_update_user->password, sizeof(old_str));
+    get_hided_password(old_str, pre_update_user->password, sizeof(old_str));
 
     char new_str[sizeof(pre_update_user->password)];
-    get_blank_str(new_str, new_password, sizeof(new_str));
+    get_hided_password(new_str, new_password, sizeof(new_str));
 
     fprintf(log_file, "TRACE: User %u updated password from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
 
