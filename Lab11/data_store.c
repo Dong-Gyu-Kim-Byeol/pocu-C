@@ -65,12 +65,12 @@ void get_blank_str(char* const out_str, const char* const plain_str, const size_
 
     strncpy(p_out_str, p_plain_str, out_size - (p_out_str - out_str));
     out_str[out_size - 1] = '\0';
+    assert(0);
     return;
 #else
 
     strncpy(out_str, plain_str, out_size);
     out_str[out_size - 1] = '\0';
-    assert(0);
     return;
 #endif
 }
