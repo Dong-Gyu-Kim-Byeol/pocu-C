@@ -25,9 +25,7 @@ static void init_log_file(void)
     }
 
     s_log_file = fopen(LOG_FILE_NAME, LOG_FILE_MODE);
-    if (NULL == s_log_file) {
-        printf("faild file open\n");
-    }
+    assert(NULL != s_log_file);
 }
 
 void get_blank_str(char* const out_str, const char* const plain_str, const size_t out_size)
