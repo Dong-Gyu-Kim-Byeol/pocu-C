@@ -10,8 +10,8 @@
 static FILE* open_log_file(void);
 static void close_log_file(FILE* log_file);
 
-void get_hided_email(char* const out_hided_email, const char* const plain_email, const size_t out_size);
-void get_hided_password(char* const out_hided_password, const char* const plain_password, const size_t out_size);
+static void get_hided_email(char* const out_hided_email, const char* const plain_email, const size_t out_size);
+static void get_hided_password(char* const out_hided_password, const char* const plain_password, const size_t out_size);
 
 static void log_update_email(const user_t* const pre_update_user, const char* const new_email);
 static void log_update_password(const user_t* const pre_update_user, const char* const new_password);
