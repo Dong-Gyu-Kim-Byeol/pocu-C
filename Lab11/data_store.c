@@ -142,6 +142,10 @@ user_t* get_user_by_username_or_null(user_t** const users_or_null, const char* c
 
 bool update_email(user_t** const users_or_null, const size_t id, const char* const email)
 {
+    if ('\0' == *email) {
+        return false;
+    }
+
     user_t* user = get_user_by_id_or_null(users_or_null, id);
     if (NULL == user) {
         return false;
@@ -156,6 +160,10 @@ bool update_email(user_t** const users_or_null, const size_t id, const char* con
 
 bool update_password(user_t** const users_or_null, const size_t id, const char* const password)
 {
+    if ('\0' == *password) {
+        return false;
+    }
+
     user_t* user = get_user_by_id_or_null(users_or_null, id);
     if (NULL == user) {
         return false;
