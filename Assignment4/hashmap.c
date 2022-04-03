@@ -111,13 +111,13 @@ int remove_key(hashmap_t* hashmap, const char* key)
 
 void destroy(hashmap_t* hashmap)
 {
+    size_t i = 0;
     node_t** p_plist = hashmap->plist;
-    while (NULL != *p_plist) {
-        node_t** phead = p_plist;
+
+    for (i = 0; i < hashmap->length; ++i) {
+        node_t** phead = p_plist + i;
         destroy_linked_list(phead);
         assert(NULL == *phead);
-
-        ++p_plist;
     }
 
     free(hashmap->plist);
