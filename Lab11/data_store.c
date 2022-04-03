@@ -17,7 +17,7 @@ static void log_update_password(const user_t* const pre_update_user, const char*
 
 static void init_log_file(void)
 {
-    const char LOG_FILE_MODE[] = "a";
+    const char LOG_FILE_MODE[] = "ab";
     const char LOG_FILE_NAME[] = "log.txt";
 
     if (NULL != s_log_file) {
@@ -84,8 +84,8 @@ static void log_update_email(const user_t* const pre_update_user, const char* co
     char new_str[sizeof(pre_update_user->email)];
     get_blank_str(new_str, new_email, sizeof(new_str));
 
-    fprintf(s_log_file, "TRACE: User %u updated email from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
-    //fprintf(s_log_file, "TRACE: User %u updated email from \"%s\" to \"%s\"\n", pre_update_user->id, pre_update_user->email, new_email);
+    //fprintf(s_log_file, "TRACE: User %u updated email from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
+    fprintf(s_log_file, "TRACE: User %u updated email from \"%s\" to \"%s\"\n", pre_update_user->id, pre_update_user->email, new_email);
 }
 
 static void log_update_password(const user_t* const pre_update_user, const char* const new_password)
@@ -98,8 +98,8 @@ static void log_update_password(const user_t* const pre_update_user, const char*
     char new_str[sizeof(pre_update_user->password)];
     get_blank_str(new_str, new_password, sizeof(new_str));
 
-    fprintf(s_log_file, "TRACE: User %u updated password from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
-    //fprintf(s_log_file, "TRACE: User %u updated password from \"%s\" to \"%s\"\n", pre_update_user->id, pre_update_user->password, new_password);
+    //fprintf(s_log_file, "TRACE: User %u updated password from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
+    fprintf(s_log_file, "TRACE: User %u updated password from \"%s\" to \"%s\"\n", pre_update_user->id, pre_update_user->password, new_password);
 }
 
 user_t* get_user_by_id_or_null(user_t** const users_or_null, const size_t id)
