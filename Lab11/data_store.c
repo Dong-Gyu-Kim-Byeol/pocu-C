@@ -88,7 +88,7 @@ static void log_update_email(const user_t* const pre_update_user, const char* co
     char new_str[sizeof(pre_update_user->email)];
     get_blank_str(new_str, new_email, sizeof(new_str));
 
-    fprintf(s_log_file, "TRACE: User %u updated email from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
+    fprintf(log_file, "TRACE: User %u updated email from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
 
     close_log_file(log_file);
     log_file = NULL;
@@ -104,7 +104,7 @@ static void log_update_password(const user_t* const pre_update_user, const char*
     char new_str[sizeof(pre_update_user->password)];
     get_blank_str(new_str, new_password, sizeof(new_str));
 
-    fprintf(s_log_file, "TRACE: User %u updated password from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
+    fprintf(log_file, "TRACE: User %u updated password from \"%s\" to \"%s\"\n", pre_update_user->id, old_str, new_str);
 
     close_log_file(log_file);
     log_file = NULL;
