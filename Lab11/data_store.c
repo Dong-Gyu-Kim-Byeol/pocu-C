@@ -57,15 +57,17 @@ void get_blank_str(char* const out_str, const char* const plain_str, const size_
     if ('@' == *p_plain_str || '\0' == *p_plain_str) {
         *(p_out_str - 1) = *(p_plain_str - 1);
     }
+    if ('\0' == *p_plain_str) {
+        *(p_out_str) = '\0';
+    }
 
     if (1 == p_plain_str - plain_str) {
         out_str[0] = '*';
-    }
-    if (2 == p_plain_str - plain_str) {
+    } else if (2 == p_plain_str - plain_str) {
         out_str[0] = plain_str[0];
         out_str[1] = '*';
     }
-
+    
     strncpy(p_out_str, p_plain_str, out_size - (p_out_str - out_str));
     out_str[out_size - 1] = '\0';
     return;
