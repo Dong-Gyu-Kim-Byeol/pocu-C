@@ -7,7 +7,7 @@ https://pocu.academy/ko/Courses/COMP2200
    
 Assignment1 : 2차원 배열을 이용한 커스텀 오목 구현   
 Assignment2 : "tr" 명령어 구현 (https://www.baeldung.com/linux/tr-command)   
-Assignment3 : 문서 안에 들어간 단어, 문장, 문단 파
+Assignment3 : 문서 안에 들어간 단어, 문장, 문단 파싱   
 Assignment4 : 해시맵 구현   
    
 Lab1 : 셋팅   
